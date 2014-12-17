@@ -20,13 +20,13 @@ Then import the `number_prefix` crate.
 
 # Usage
 
-The function `format_bytes` returns either a pair of the resulting number
+The function `decimal_prefix` returns either a pair of the resulting number
 and its prefix, or a notice that the number was too small to have any
 prefix applied to it. For example:
 
 ```rust
-use number_prefix::{Decimal, Standalone, Prefixed};
-match Decimal::prefix(8542_f32) {
+use number_prefix::{decimal_prefix, Standalone, Prefixed};
+match decimal_prefix(8542_f32) {
 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
 }
@@ -44,8 +44,8 @@ If the value is too small to have any prefixes applied to it - in this
 case, if it's under 1000 - then the standalone value will be returned:
 
 ```rust
-use number_prefix::{Decimal, Standalone, Prefixed};
-match Decimal::prefix(705_f32) {
+use number_prefix::{decimal_prefix, Standalone, Prefixed};
+match decimal_prefix(705_f32) {
 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
 }
@@ -62,11 +62,11 @@ values without any prefixes - they often need to be special-cased.
 
 This library also allows you to use the *binary prefixes*, which use the
 number 1024 (2^10) as the multiplier, rather than the more common 1000
-(10^3). For example:
+(10^3). This uses the `binary_prefix` function. For example:
 
 ```rust
-use number_prefix::{Binary, Standalone, Prefixed};
-match Binary::prefix(8542_f32) {
+use number_prefix::{binary_prefix, Standalone, Prefixed};
+match binary_prefix(8542_f32) {
 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
 }
@@ -92,8 +92,8 @@ the symbol, import the `PrefixNames` trait, which adds methods to output
 the prefix in a variety of formats. For example:
 
 ```rust
-use number_prefix::{Decimal, Standalone, Prefixed, PrefixNames};
-match Decimal::prefix(8542_f32) {
+use number_prefix::{decimal_prefix, Standalone, Prefixed, PrefixNames};
+match decimal_prefix(8542_f32) {
 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
     Prefixed(prefix, n) => println!("The file is {:.0} {}bytes in size", n, prefix.lower()),
 }
