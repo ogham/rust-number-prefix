@@ -8,13 +8,13 @@
 //! Formatting Numbers
 //! ------------------
 //!
-//! The function `format_bytes` returns either a pair of the resulting number
+//! The function `decimal_prefix` returns either a pair of the resulting number
 //! and its prefix, or a notice that the number was too small to have any
 //! prefix applied to it. For example:
 //!
 //! ```rust
-//! use number_prefix::{Decimal, Standalone, Prefixed};
-//! match Decimal::prefix(8542_f32) {
+//! use number_prefix::{decimal_prefix, Standalone, Prefixed};
+//! match decimal_prefix(8542_f32) {
 //! 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
 //! }
@@ -32,8 +32,8 @@
 //! case, if it's under 1000 - then the standalone value will be returned:
 //!
 //! ```rust
-//! use number_prefix::{Decimal, Standalone, Prefixed};
-//! match Decimal::prefix(705_f32) {
+//! use number_prefix::{decimal_prefix, Standalone, Prefixed};
+//! match decimal_prefix(705_f32) {
 //! 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
 //! }
@@ -51,11 +51,11 @@
 //!
 //! This library also allows you to use the *binary prefixes*, which use the
 //! number 1024 (2^10) as the multiplier, rather than the more common 1000
-//! (10^3). For example:
+//! (10^3). This uses the `binary_prefix` function. For example:
 //! 
 //! ```rust
-//! use number_prefix::{Binary, Standalone, Prefixed};
-//! match Binary::prefix(8542_f32) {
+//! use number_prefix::{binary_prefix, Standalone, Prefixed};
+//! match binary_prefix(8542_f32) {
 //! 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
 //! }
@@ -82,8 +82,8 @@
 //! the prefix in a variety of formats. For example:
 //!
 //! ```rust
-//! use number_prefix::{Decimal, Standalone, Prefixed, PrefixNames};
-//! match Decimal::prefix(8542_f32) {
+//! use number_prefix::{decimal_prefix, Standalone, Prefixed, PrefixNames};
+//! match decimal_prefix(8542_f32) {
 //! 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}bytes in size", n, prefix.lower()),
 //! }
@@ -92,8 +92,11 @@
 use std::num::Float;
 use std::fmt;
 
-pub use Decimal::{Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta};
-pub use Binary::{Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi};
+pub use Prefix::{
+	Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
+	Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
+};
+
 pub use Result::{Standalone, Prefixed};
 
 /// Formatting methods for prefix, for when you want to output things other
@@ -113,83 +116,38 @@ pub trait PrefixNames {
     fn symbol(&self) -> &'static str;
 }
 
-/// A decimal prefix.
-#[deriving(PartialEq, Eq, PartialOrd, Ord, Clone)]
-pub enum Decimal {
+/// A numeric prefix, either binary or decimal.
+#[deriving(PartialEq, Eq, Clone)]
+pub enum Prefix {
     Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
+    Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
 }
 
-impl Copy for Decimal { }
+impl Copy for Prefix { }
 
-impl Decimal {
-	/// Format the given floating-point number using **decimal** prefixes,
-	/// returning a result.
-	pub fn prefix<F: Amounts>(amount: F) -> Result<F, Decimal> {
-		format_number(amount, Amounts::get_1000(), [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
-	}
+/// Format the given floating-point number using **decimal** prefixes,
+/// returning a result.
+pub fn decimal_prefix<F: Amounts>(amount: F) -> Result<F> {
+	format_number(amount, Amounts::get_1000(), [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
 }
 
-impl fmt::Show for Decimal {
+/// Format the given floating-point number using **binary** prefixes,
+/// returning a result.
+pub fn binary_prefix<F: Amounts>(amount: F) -> Result<F> {
+	format_number(amount, Amounts::get_1024(), [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
+}
+
+impl fmt::Show for Prefix {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f, "{}", self.symbol())
 	}
 }
 
-impl PrefixNames for Decimal {
+impl PrefixNames for Prefix {
     fn upper(&self) -> &'static str {
         match *self {
             Kilo => "KILO", Mega => "MEGA", Giga => "GIGA", Tera => "TERA",
             Peta => "PETA", Exa => "EXA", Zetta => "ZETTA", Yotta => "YOTTA",
-        }
-    }
-
-    fn caps(&self) -> &'static str {
-        match *self {
-            Kilo => "Kilo", Mega => "Mega", Giga => "Giga", Tera => "Tera",
-            Peta => "Peta", Exa => "Exa", Zetta => "Zetta", Yotta => "Yotta",
-        }
-    }
-
-    fn lower(&self) -> &'static str {
-        match *self {
-            Kilo => "kilo", Mega => "mega", Giga => "giga", Tera => "tera",
-            Peta => "peta", Exa => "exa", Zetta => "zetta", Yotta => "yotta",
-        }
-    }
-
-    fn symbol(&self) -> &'static str {
-        match *self {
-            Kilo => "K", Mega => "M", Giga => "G", Tera => "T",
-            Peta => "P", Exa => "E", Zetta => "Z", Yotta => "Y",
-        }
-    }
-}
-
-/// A binary prefix.
-#[deriving(PartialEq, Eq, PartialOrd, Ord, Clone)]
-pub enum Binary {
-    Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
-}
-
-impl Copy for Binary { }
-
-impl Binary {
-	/// Format the given floating-point number using **binary** prefixes,
-	/// returning a result.
-	pub fn prefix<F: Amounts>(amount: F) -> Result<F, Binary> {
-		format_number(amount, Amounts::get_1024(), [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
-	}
-}
-
-impl fmt::Show for Binary {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", self.symbol())
-	}
-}
-
-impl PrefixNames for Binary {
-    fn upper(&self) -> &'static str {
-        match *self {
             Kibi => "KIBI", Mibi => "MIBI", Gibi => "GIBI", Tebi => "TEBI",
             Pebi => "PEBI", Exbi => "EXBI", Zebi => "ZEBI", Yobi => "YOBI",
         }
@@ -197,6 +155,8 @@ impl PrefixNames for Binary {
 
     fn caps(&self) -> &'static str {
         match *self {
+            Kilo => "Kilo", Mega => "Mega", Giga => "Giga", Tera => "Tera",
+            Peta => "Peta", Exa => "Exa", Zetta => "Zetta", Yotta => "Yotta",
             Kibi => "Kibi", Mibi => "Mibi", Gibi => "Gibi", Tebi => "Tebi",
             Pebi => "Pebi", Exbi => "Exbi", Zebi => "Zebi", Yobi => "Yobi",
         }
@@ -204,6 +164,8 @@ impl PrefixNames for Binary {
 
     fn lower(&self) -> &'static str {
         match *self {
+            Kilo => "kilo", Mega => "mega", Giga => "giga", Tera => "tera",
+            Peta => "peta", Exa => "exa", Zetta => "zetta", Yotta => "yotta",
             Kibi => "kibi", Mibi => "mibi", Gibi => "gibi", Tebi => "tebi",
             Pebi => "pebi", Exbi => "exbi", Zebi => "zebi", Yobi => "yobi",
         }
@@ -211,6 +173,8 @@ impl PrefixNames for Binary {
 
     fn symbol(&self) -> &'static str {
         match *self {
+            Kilo => "K",  Mega => "M",  Giga => "G",  Tera => "T",
+            Peta => "P",  Exa => "E",  Zetta => "Z",  Yotta => "Y",
             Kibi => "Ki", Mibi => "Mi", Gibi => "Gi", Tebi => "Ti",
             Pebi => "Pi", Exbi => "Ei", Zebi => "Zi", Yobi => "Yi",
         }
@@ -219,7 +183,7 @@ impl PrefixNames for Binary {
 
 /// The result of trying to apply a prefix to a floating-point value.
 #[deriving(PartialEq, Eq, Clone, Show)]
-pub enum Result<F, P> {
+pub enum Result<F> {
 
 	/// A **standalone** value is returned when the number is too small to
 	/// have any prefixes applied to it. This is commonly a special case, so
@@ -228,11 +192,10 @@ pub enum Result<F, P> {
     
     /// A **prefixed** value *is* large enough for prefixes. This holds the
     /// prefix, as well as the resulting value.
-    Prefixed(P, F),
+    Prefixed(Prefix, F),
 }
 
-fn format_number<F, P>(mut amount: F, kilo: F, prefixes: [P, ..8]) -> Result<F, P>
-        where F: Float, P: PrefixNames
+fn format_number<F: Float>(mut amount: F, kilo: F, prefixes: [Prefix, ..8]) -> Result<F>
 {
 	let negative = if amount.is_negative() { amount = -amount; true } else { false };
 	
@@ -272,107 +235,106 @@ impl Amounts for f64 {
 
 #[cfg(test)]
 mod test {
-    use super::{Decimal, Binary};
+    use super::{binary_prefix, decimal_prefix};
     use super::Result::{Standalone, Prefixed};
-    use super::Decimal::{Kilo, Giga, Tera, Peta, Exa, Zetta, Yotta};
-    use super::Binary::{Kibi, Mibi, Gibi};
+    use super::Prefix::{Kilo, Giga, Tera, Peta, Exa, Zetta, Yotta, Kibi, Mibi, Gibi};
 
 	#[test]
 	fn decimal_minus_one_billion() {
-	    assert_eq!(Decimal::prefix(-1_000_000_000_f64), Prefixed(Giga, -1f64))
+	    assert_eq!(decimal_prefix(-1_000_000_000_f64), Prefixed(Giga, -1f64))
 	}
     
     #[test]
     fn decimal_minus_one() {
-        assert_eq!(Decimal::prefix(-1f64), Standalone(-1f64))
+        assert_eq!(decimal_prefix(-1f64), Standalone(-1f64))
     }
 
     #[test]
     fn decimal_0() {
-        assert_eq!(Decimal::prefix(0f64), Standalone(0f64))
+        assert_eq!(decimal_prefix(0f64), Standalone(0f64))
     }
 
     #[test]
     fn decimal_999() {
-        assert_eq!(Decimal::prefix(999f32), Standalone(999f32))
+        assert_eq!(decimal_prefix(999f32), Standalone(999f32))
     }
 
     #[test]
     fn decimal_1000() {
-        assert_eq!(Decimal::prefix(1000f32), Prefixed(Kilo, 1f32))
+        assert_eq!(decimal_prefix(1000f32), Prefixed(Kilo, 1f32))
     }
 
     #[test]
     fn decimal_1030() {
-        assert_eq!(Decimal::prefix(1030f32), Prefixed(Kilo, 1.03f32))
+        assert_eq!(decimal_prefix(1030f32), Prefixed(Kilo, 1.03f32))
     }
 
     #[test]
     fn decimal_1100() {
-        assert_eq!(Decimal::prefix(1100f64), Prefixed(Kilo, 1.1f64))
+        assert_eq!(decimal_prefix(1100f64), Prefixed(Kilo, 1.1f64))
     }
 
     #[test]
     fn decimal_1111() {
-        assert_eq!(Decimal::prefix(1111f64), Prefixed(Kilo, 1.111f64))
+        assert_eq!(decimal_prefix(1111f64), Prefixed(Kilo, 1.111f64))
     }
 
     #[test]
     fn binary_126456() {
-        assert_eq!(Binary::prefix(126_456f32), Prefixed(Kibi, 123.492188f32))
+        assert_eq!(binary_prefix(126_456f32), Prefixed(Kibi, 123.492188f32))
     }
 
     #[test]
     fn binary_1048576() {
-        assert_eq!(Binary::prefix(1_048_576f64), Prefixed(Mibi, 1f64))
+        assert_eq!(binary_prefix(1_048_576f64), Prefixed(Mibi, 1f64))
     }
 
     #[test]
     fn binary_1073741824() {
-        assert_eq!(Binary::prefix(2_147_483_648f32), Prefixed(Gibi, 2f32))
+        assert_eq!(binary_prefix(2_147_483_648f32), Prefixed(Gibi, 2f32))
     }
     
     #[test]
     fn giga() {
-    	assert_eq!(Decimal::prefix(1_000_000_000f64), Prefixed(Giga, 1f64))
+    	assert_eq!(decimal_prefix(1_000_000_000f64), Prefixed(Giga, 1f64))
     }
 
     #[test]
     fn tera() {
-    	assert_eq!(Decimal::prefix(1_000_000_000_000f64), Prefixed(Tera, 1f64))
+    	assert_eq!(decimal_prefix(1_000_000_000_000f64), Prefixed(Tera, 1f64))
     }
 
     #[test]
     fn peta() {
-    	assert_eq!(Decimal::prefix(1_000_000_000_000_000f64), Prefixed(Peta, 1f64))
+    	assert_eq!(decimal_prefix(1_000_000_000_000_000f64), Prefixed(Peta, 1f64))
     }
 
     #[test]
     fn exa() {
-    	assert_eq!(Decimal::prefix(1_000_000_000_000_000_000f64), Prefixed(Exa, 1f64))
+    	assert_eq!(decimal_prefix(1_000_000_000_000_000_000f64), Prefixed(Exa, 1f64))
     }
 
     #[test]
     fn zetta() {
-    	assert_eq!(Decimal::prefix(1_000_000_000_000_000_000_000f64), Prefixed(Zetta, 1f64))
+    	assert_eq!(decimal_prefix(1_000_000_000_000_000_000_000f64), Prefixed(Zetta, 1f64))
     }
 
     #[test]
     fn yotta() {
-    	assert_eq!(Decimal::prefix(1_000_000_000_000_000_000_000_000f64), Prefixed(Yotta, 1f64))
+    	assert_eq!(decimal_prefix(1_000_000_000_000_000_000_000_000f64), Prefixed(Yotta, 1f64))
     }
 
     #[test]
     #[allow(overflowing_literals)]
     fn and_so_on() {
     	// When you hit yotta, don't keep going
-		assert_eq!(Decimal::prefix(1_000_000_000_000_000_000_000_000_000f64), Prefixed(Yotta, 1000f64))
+		assert_eq!(decimal_prefix(1_000_000_000_000_000_000_000_000_000f64), Prefixed(Yotta, 1000f64))
     }
 
     
     #[test]
     fn example_one() {
-		let result = match Decimal::prefix(8542_f32) {
+		let result = match decimal_prefix(8542_f32) {
 			Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
 			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
@@ -382,7 +344,7 @@ mod test {
 
     #[test]
     fn example_two() {
-		let result = match Decimal::prefix(705_f32) {
+		let result = match decimal_prefix(705_f32) {
 			Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
 			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
@@ -392,7 +354,7 @@ mod test {
     
 	#[test]
     fn example_three() {
-		let result = match Binary::prefix(8542_f32) {
+		let result = match binary_prefix(8542_f32) {
 			Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
 			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
