@@ -117,7 +117,7 @@ pub trait PrefixNames {
 }
 
 /// A numeric prefix, either binary or decimal.
-#[deriving(PartialEq, Eq, Clone)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum Prefix {
     Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
     Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
@@ -182,7 +182,7 @@ impl PrefixNames for Prefix {
 }
 
 /// The result of trying to apply a prefix to a floating-point value.
-#[deriving(PartialEq, Eq, Clone, Show)]
+#[derive(PartialEq, Eq, Clone, Show)]
 pub enum Result<F> {
 
 	/// A **standalone** value is returned when the number is too small to
@@ -195,7 +195,7 @@ pub enum Result<F> {
     Prefixed(Prefix, F),
 }
 
-fn format_number<F: Float>(mut amount: F, kilo: F, prefixes: [Prefix, ..8]) -> Result<F>
+fn format_number<F: Float>(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Result<F>
 {
 	let negative = if amount.is_negative() { amount = -amount; true } else { false };
 	
