@@ -1,6 +1,7 @@
 #![crate_name = "number_prefix"]
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
+#![allow(unstable)]
 
 //! This is a library for formatting numbers with numeric prefixes, such as
 //! turning "3000 metres" into "3 kilometres", or "8705 bytes" into "8.5 KiB".
@@ -117,7 +118,7 @@ pub trait PrefixNames {
 }
 
 /// A numeric prefix, either binary or decimal.
-#[derive(PartialEq, Eq, Clone)]
+#[derive(PartialEq, Eq, Clone, Show)]
 pub enum Prefix {
     Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
     Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
@@ -137,7 +138,7 @@ pub fn binary_prefix<F: Amounts>(amount: F) -> Result<F> {
 	format_number(amount, Amounts::get_1024(), [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
 }
 
-impl fmt::Show for Prefix {
+impl fmt::String for Prefix {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f, "{}", self.symbol())
 	}
