@@ -1,7 +1,7 @@
 #![crate_name = "number_prefix"]
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
-#![allow(unstable)]
+#![feature(core)]
 
 //! This is a library for formatting numbers with numeric prefixes, such as
 //! turning "3000 metres" into "3 kilometres", or "8705 bytes" into "8.5 KiB".
@@ -53,7 +53,7 @@
 //! This library also allows you to use the *binary prefixes*, which use the
 //! number 1024 (2^10) as the multiplier, rather than the more common 1000
 //! (10^3). This uses the `binary_prefix` function. For example:
-//! 
+//!
 //! ```rust
 //! use number_prefix::{binary_prefix, Standalone, Prefixed};
 //! match binary_prefix(8542_f32) {
@@ -103,22 +103,22 @@ pub use Result::{Standalone, Prefixed};
 /// Formatting methods for prefix, for when you want to output things other
 /// than just the short-hand symbols.
 pub trait PrefixNames {
-	
+
 	/// Returns the name in uppercase, such as "KILO".
     fn upper(&self) -> &'static str;
-    
+
     /// Returns the name with the first letter capitalised, such as "Mega".
     fn caps(&self) -> &'static str;
-    
+
     /// Returns the name in lowercase, such as "giga".
     fn lower(&self) -> &'static str;
-    
+
     /// Returns the short-hand symbol, such as "T".
     fn symbol(&self) -> &'static str;
 }
 
 /// A numeric prefix, either binary or decimal.
-#[derive(PartialEq, Eq, Clone, Show)]
+#[derive(PartialEq, Eq, Clone, Debug)]
 pub enum Prefix {
     Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
     Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
@@ -138,7 +138,7 @@ pub fn binary_prefix<F: Amounts>(amount: F) -> Result<F> {
 	format_number(amount, Amounts::get_1024(), [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
 }
 
-impl fmt::String for Prefix {
+impl fmt::Display for Prefix {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f, "{}", self.symbol())
 	}
@@ -190,7 +190,7 @@ pub enum Result<F> {
 	/// have any prefixes applied to it. This is commonly a special case, so
 	/// is handled separately.
     Standalone(F),
-    
+
     /// A **prefixed** value *is* large enough for prefixes. This holds the
     /// prefix, as well as the resulting value.
     Prefixed(Prefix, F),
@@ -199,13 +199,13 @@ pub enum Result<F> {
 fn format_number<F: Float>(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Result<F>
 {
 	let negative = if amount.is_negative() { amount = -amount; true } else { false };
-	
+
     let mut prefix = 0;
     while amount >= kilo && prefix < 8 {
         amount = amount / kilo;
         prefix += 1;
     }
-    
+
     if negative {
     	amount = -amount;
     }
@@ -244,7 +244,7 @@ mod test {
 	fn decimal_minus_one_billion() {
 	    assert_eq!(decimal_prefix(-1_000_000_000_f64), Prefixed(Giga, -1f64))
 	}
-    
+
     #[test]
     fn decimal_minus_one() {
         assert_eq!(decimal_prefix(-1f64), Standalone(-1f64))
@@ -294,7 +294,7 @@ mod test {
     fn binary_1073741824() {
         assert_eq!(binary_prefix(2_147_483_648f32), Prefixed(Gibi, 2f32))
     }
-    
+
     #[test]
     fn giga() {
     	assert_eq!(decimal_prefix(1_000_000_000f64), Prefixed(Giga, 1f64))
@@ -332,14 +332,14 @@ mod test {
 		assert_eq!(decimal_prefix(1_000_000_000_000_000_000_000_000_000f64), Prefixed(Yotta, 1000f64))
     }
 
-    
+
     #[test]
     fn example_one() {
 		let result = match decimal_prefix(8542_f32) {
 			Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
 			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
-		
+
 		assert_eq!(result, "The file is 8.5 KB in size");
     }
 
@@ -349,17 +349,17 @@ mod test {
 			Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
 			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
-		
+
 		assert_eq!(result, "The file is 705 bytes in size");
     }
-    
+
 	#[test]
     fn example_three() {
 		let result = match binary_prefix(8542_f32) {
 			Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
 			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
-		
+
 		assert_eq!(result, "The file is 8.3 KiB in size");
     }
 }
