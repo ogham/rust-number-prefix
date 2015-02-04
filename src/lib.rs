@@ -1,7 +1,6 @@
 #![crate_name = "number_prefix"]
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
-#![feature(core)]
 
 //! This is a library for formatting numbers with numeric prefixes, such as
 //! turning "3000 metres" into "3 kilometres", or "8705 bytes" into "8.5 KiB".
@@ -183,7 +182,7 @@ impl PrefixNames for Prefix {
 }
 
 /// The result of trying to apply a prefix to a floating-point value.
-#[derive(PartialEq, Eq, Clone, Show)]
+#[derive(PartialEq, Eq, Clone, Debug)]
 pub enum Result<F> {
 
 	/// A **standalone** value is returned when the number is too small to
