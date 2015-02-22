@@ -173,7 +173,7 @@ impl PrefixNames for Prefix {
 
     fn symbol(&self) -> &'static str {
         match *self {
-            Kilo => "K",  Mega => "M",  Giga => "G",  Tera => "T",
+            Kilo => "k",  Mega => "M",  Giga => "G",  Tera => "T",
             Peta => "P",  Exa => "E",  Zetta => "Z",  Yotta => "Y",
             Kibi => "Ki", Mibi => "Mi", Gibi => "Gi", Tebi => "Ti",
             Pebi => "Pi", Exbi => "Ei", Zebi => "Zi", Yobi => "Yi",
