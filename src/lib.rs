@@ -339,7 +339,7 @@ mod test {
 			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
 
-		assert_eq!(result, "The file is 8.5 KB in size");
+		assert_eq!(result, "The file is 8.5 kB in size");
     }
 
     #[test]
