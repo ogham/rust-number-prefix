@@ -8,4 +8,8 @@ documentation = "http://bsago.me/doc/number_prefix/"
 homepage = "https://github.com/ogham/rust-number-prefix"
 license = "MIT"
 readme = "README.md"
-version = "0.2.3"
+version = "0.2.4"
+
+[dependencies]
+
+num = "*"

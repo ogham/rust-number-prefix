@@ -89,7 +89,8 @@
 //! }
 //! ```
 
-use std::num::Float;
+extern crate num;
+use num::{Float, Signed};
 use std::fmt;
 
 pub use Prefix::{
@@ -98,6 +99,7 @@ pub use Prefix::{
 };
 
 pub use Result::{Standalone, Prefixed};
+
 
 /// Formatting methods for prefix, for when you want to output things other
 /// than just the short-hand symbols.
@@ -195,7 +197,7 @@ pub enum Result<F> {
     Prefixed(Prefix, F),
 }
 
-fn format_number<F: Float>(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Result<F>
+fn format_number<F: Float+Signed>(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Result<F>
 {
 	let negative = if amount.is_negative() { amount = -amount; true } else { false };
 
@@ -218,7 +220,7 @@ fn format_number<F: Float>(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Res
 }
 
 /// Constructors for floating-point values for both the possible multipliers.
-pub trait Amounts: Float {
+pub trait Amounts: Float+Signed {
     fn get_1000() -> Self;
     fn get_1024() -> Self;
 }
