@@ -4,7 +4,7 @@ name = "number_prefix"
 description = "Library for formatting numeric prefixes: kilo, giga, kibi."
 
 authors = [ "ogham@bsago.me" ]
-documentation = "http://bsago.me/doc/number_prefix/"
+documentation = "http://ogham.rustdocs.org/number_prefix/"
 homepage = "https://github.com/ogham/rust-number-prefix"
 license = "MIT"
 readme = "README.md"
