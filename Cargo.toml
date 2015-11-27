@@ -1,5 +1,4 @@
 [package]
-
 name = "number_prefix"
 description = "Library for formatting numeric prefixes: kilo, giga, kibi."
 
@@ -8,8 +7,7 @@ documentation = "http://ogham.rustdocs.org/number_prefix/"
 homepage = "https://github.com/ogham/rust-number-prefix"
 license = "MIT"
 readme = "README.md"
-version = "0.2.4"
+version = "0.2.5"
 
 [dependencies]
-
-num = "*"
+num = "0.1"

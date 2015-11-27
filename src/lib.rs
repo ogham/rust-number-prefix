@@ -3,51 +3,51 @@
 #![crate_type = "dylib"]
 
 //! This is a library for formatting numbers with numeric prefixes, such as
-//! turning "3000 metres" into "3 kilometres", or "8705 bytes" into "8.5 KiB".
+//! turning “3000 metres” into “3 kilometres”, or “8705 bytes” into “8.5 KiB”.
 //!
-//! Formatting Numbers
-//! ------------------
+//!
+//! # Usage
 //!
 //! The function `decimal_prefix` returns either a pair of the resulting number
-//! and its prefix, or a notice that the number was too small to have any
-//! prefix applied to it. For example:
+//! and its prefix, or a notice that the number was too small to have any prefix
+//! applied to it. For example:
 //!
 //! ```rust
 //! use number_prefix::{decimal_prefix, Standalone, Prefixed};
 //! match decimal_prefix(8542_f32) {
-//! 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
+//!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
 //! }
 //! ```
 //!
-//! This will print out `"The file is 8.5 KB in size"`. The `{:.0}` part of
-//! the formatting string tells it to restrict the output to only one decimal
-//! place. This value is calculated by repeatedly dividing the number by 1000
-//! until it becomes less than that, which in this case results in 8.542, which
-//! gets rounded down. Because only one division had to take place, the
-//! function also returns the decimal prefix `Kilo`, which gets converted to
-//! its internationally-recognised symbol when formatted as a string.
+//! This will print out `"The file is 8.5 kB in size"`. The `{:.0}` part of the
+//! formatting string tells it to restrict the output to only one decimal place.
+//! This value is calculated by repeatedly dividing the number by 1000 until it
+//! becomes less than that, which in this case results in 8.542, which gets
+//! rounded down. Because only one division had to take place, the function also
+//! returns the decimal prefix `Kilo`, which gets converted to its
+//! internationally-recognised symbol when formatted as a string.
 //!
-//! If the value is too small to have any prefixes applied to it - in this
-//! case, if it's under 1000 - then the standalone value will be returned:
+//! If the value is too small to have any prefixes applied to it - in this case,
+//! if it’s under 1000 - then the standalone value will be returned:
 //!
 //! ```rust
 //! use number_prefix::{decimal_prefix, Standalone, Prefixed};
 //! match decimal_prefix(705_f32) {
-//! 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
+//!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
 //! }
 //! ```
 //!
 //! This will print out `"The file is 705 bytes in size"`, having chosen the
-//! other path to follow. In this particular example, the user expects
-//! different formatting for both bytes and kilobytes: while prefixed values
-//! are given more precision, there's no point using anything other than whole
-//! numbers for just byte amounts. This is why the function pays attention to
-//! values without any prefixes - they often need to be special-cased.
+//! other path to follow. In this particular example, the user expects different
+//! formatting for both bytes and kilobytes: while prefixed values are given
+//! more precision, there’s no point using anything other than whole numbers for
+//! just byte amounts. This is why the function pays attention to values without
+//! any prefixes - they often need to be special-cased.
 //!
-//! Binary Prefixes
-//! ---------------
+//!
+//! ## Binary Prefixes
 //!
 //! This library also allows you to use the *binary prefixes*, which use the
 //! number 1024 (2^10) as the multiplier, rather than the more common 1000
@@ -56,35 +56,36 @@
 //! ```rust
 //! use number_prefix::{binary_prefix, Standalone, Prefixed};
 //! match binary_prefix(8542_f32) {
-//! 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
+//!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
 //! }
 //! ```
 //!
-//! This will print out `"The file is 8.3 KiB in size"`. A kibibyte is
-//! slightly larger than a kilobyte, so the number is smaller in the result;
-//! but other than that, it works in exactly the same way, with the binary
-//! prefix being converted to a symbol automatically.
+//! This will print out `"The file is 8.3 KiB in size"`. A kibibyte is slightly
+//! larger than a kilobyte, so the number is smaller in the result; but other
+//! than that, it works in exactly the same way, with the binary prefix being
+//! converted to a symbol automatically.
+//!
 //!
 //! ### Which type of prefix should I use?
 //!
-//! There is no one way to answer this question! The prevailing theory is to
-//! use the binary prefixes for numbers of *bytes*, while still using the
-//! decimal prefixes for everything else. Computers work with powers of two,
-//! rather than powers of ten, and by using the binary prefixes, you get a more
-//! accurate representation about the amount of data.
+//! There is no one way to answer this question! The prevailing theory is to use
+//! the binary prefixes for numbers of *bytes*, while still using the decimal
+//! prefixes for everything else. Computers work with powers of two, rather than
+//! powers of ten, and by using the binary prefixes, you get a more accurate
+//! representation about the amount of data.
 //!
-//! Prefix Names
-//! ------------
 //!
-//! If you need to describe your unit in actual words, rather than just with
-//! the symbol, import the `PrefixNames` trait, which adds methods to output
-//! the prefix in a variety of formats. For example:
+//! ## Prefix Names
+//!
+//! If you need to describe your unit in actual words, rather than just with the
+//! symbol, import the `PrefixNames` trait, which adds methods to output the
+//! prefix in a variety of formats. For example:
 //!
 //! ```rust
 //! use number_prefix::{decimal_prefix, Standalone, Prefixed, PrefixNames};
 //! match decimal_prefix(8542_f32) {
-//! 	Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
+//!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}bytes in size", n, prefix.lower()),
 //! }
 //! ```
@@ -105,36 +106,40 @@ pub use Result::{Standalone, Prefixed};
 /// than just the short-hand symbols.
 pub trait PrefixNames {
 
-	/// Returns the name in uppercase, such as "KILO".
+	/// Returns the name in uppercase, such as “KILO”.
     fn upper(&self) -> &'static str;
 
-    /// Returns the name with the first letter capitalised, such as "Mega".
+    /// Returns the name with the first letter capitalised, such as “Mega”.
     fn caps(&self) -> &'static str;
 
-    /// Returns the name in lowercase, such as "giga".
+    /// Returns the name in lowercase, such as “giga”.
     fn lower(&self) -> &'static str;
 
-    /// Returns the short-hand symbol, such as "T".
+    /// Returns the short-hand symbol, such as “T” (for “tera”).
     fn symbol(&self) -> &'static str;
 }
 
 /// A numeric prefix, either binary or decimal.
-#[derive(PartialEq, Eq, Clone, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Prefix {
     Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
     Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
 }
 
-impl Copy for Prefix { }
-
-/// Format the given floating-point number using **decimal** prefixes,
+/// Formats the given floating-point number using **decimal** prefixes,
 /// returning a result.
+///
+/// This function accepts both `f32` and `f64` values. If you’re trying to
+/// format an integer, you’ll have to cast it first.
 pub fn decimal_prefix<F: Amounts>(amount: F) -> Result<F> {
 	format_number(amount, Amounts::get_1000(), [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
 }
 
-/// Format the given floating-point number using **binary** prefixes,
+/// Formats the given floating-point number using **binary** prefixes,
 /// returning a result.
+///
+/// This function accepts both `f32` and `f64` values. If you’re trying to
+/// format an integer, you’ll have to cast it first.
 pub fn binary_prefix<F: Amounts>(amount: F) -> Result<F> {
 	format_number(amount, Amounts::get_1024(), [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
 }
@@ -148,37 +153,37 @@ impl fmt::Display for Prefix {
 impl PrefixNames for Prefix {
     fn upper(&self) -> &'static str {
         match *self {
-            Kilo => "KILO", Mega => "MEGA", Giga => "GIGA", Tera => "TERA",
-            Peta => "PETA", Exa => "EXA", Zetta => "ZETTA", Yotta => "YOTTA",
-            Kibi => "KIBI", Mibi => "MIBI", Gibi => "GIBI", Tebi => "TEBI",
-            Pebi => "PEBI", Exbi => "EXBI", Zebi => "ZEBI", Yobi => "YOBI",
+            Kilo => "KILO",  Mega => "MEGA",  Giga  => "GIGA",   Tera  => "TERA",
+            Peta => "PETA",  Exa  => "EXA",   Zetta => "ZETTA",  Yotta => "YOTTA",
+            Kibi => "KIBI",  Mibi => "MIBI",  Gibi  => "GIBI",   Tebi  => "TEBI",
+            Pebi => "PEBI",  Exbi => "EXBI",  Zebi  => "ZEBI",   Yobi  => "YOBI",
         }
     }
 
     fn caps(&self) -> &'static str {
         match *self {
-            Kilo => "Kilo", Mega => "Mega", Giga => "Giga", Tera => "Tera",
-            Peta => "Peta", Exa => "Exa", Zetta => "Zetta", Yotta => "Yotta",
-            Kibi => "Kibi", Mibi => "Mibi", Gibi => "Gibi", Tebi => "Tebi",
-            Pebi => "Pebi", Exbi => "Exbi", Zebi => "Zebi", Yobi => "Yobi",
+            Kilo => "Kilo",  Mega => "Mega",  Giga  => "Giga",   Tera  => "Tera",
+            Peta => "Peta",  Exa  => "Exa",   Zetta => "Zetta",  Yotta => "Yotta",
+            Kibi => "Kibi",  Mibi => "Mibi",  Gibi  => "Gibi",   Tebi  => "Tebi",
+            Pebi => "Pebi",  Exbi => "Exbi",  Zebi  => "Zebi",   Yobi  => "Yobi",
         }
     }
 
     fn lower(&self) -> &'static str {
         match *self {
-            Kilo => "kilo", Mega => "mega", Giga => "giga", Tera => "tera",
-            Peta => "peta", Exa => "exa", Zetta => "zetta", Yotta => "yotta",
-            Kibi => "kibi", Mibi => "mibi", Gibi => "gibi", Tebi => "tebi",
-            Pebi => "pebi", Exbi => "exbi", Zebi => "zebi", Yobi => "yobi",
+            Kilo => "kilo",  Mega => "mega",  Giga  => "giga",   Tera  => "tera",
+            Peta => "peta",  Exa  => "exa",   Zetta => "zetta",  Yotta => "yotta",
+            Kibi => "kibi",  Mibi => "mibi",  Gibi  => "gibi",   Tebi  => "tebi",
+            Pebi => "pebi",  Exbi => "exbi",  Zebi  => "zebi",   Yobi  => "yobi",
         }
     }
 
     fn symbol(&self) -> &'static str {
         match *self {
-            Kilo => "k",  Mega => "M",  Giga => "G",  Tera => "T",
-            Peta => "P",  Exa => "E",  Zetta => "Z",  Yotta => "Y",
-            Kibi => "Ki", Mibi => "Mi", Gibi => "Gi", Tebi => "Ti",
-            Pebi => "Pi", Exbi => "Ei", Zebi => "Zi", Yobi => "Yi",
+            Kilo => "k",   Mega => "M",   Giga  => "G",   Tera  => "T",
+            Peta => "P",   Exa  => "E",   Zetta => "Z",   Yotta => "Y",
+            Kibi => "Ki",  Mibi => "Mi",  Gibi  => "Gi",  Tebi  => "Ti",
+            Pebi => "Pi",  Exbi => "Ei",  Zebi  => "Zi",  Yobi  => "Yi",
         }
     }
 }
@@ -197,9 +202,12 @@ pub enum Result<F> {
     Prefixed(Prefix, F),
 }
 
-fn format_number<F: Float+Signed>(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Result<F>
-{
-	let negative = if amount.is_negative() { amount = -amount; true } else { false };
+fn format_number<F>(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Result<F>
+where F: Float + Signed {
+
+    // For negative numbers, flip it to positive, do the processing, then
+    // flip it back to negative again afterwards.
+	let was_negative = if amount.is_negative() { amount = -amount; true } else { false };
 
     let mut prefix = 0;
     while amount >= kilo && prefix < 8 {
@@ -207,7 +215,7 @@ fn format_number<F: Float+Signed>(mut amount: F, kilo: F, prefixes: [Prefix; 8])
         prefix += 1;
     }
 
-    if negative {
+    if was_negative {
     	amount = -amount;
     }
 
@@ -332,7 +340,6 @@ mod test {
     	// When you hit yotta, don't keep going
 		assert_eq!(decimal_prefix(1_000_000_000_000_000_000_000_000_000f64), Prefixed(Yotta, 1000f64))
     }
-
 
     #[test]
     fn example_one() {
