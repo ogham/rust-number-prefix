@@ -1,3 +1,5 @@
+#![feature(associated_consts)]
+
 #![crate_name = "number_prefix"]
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
@@ -132,7 +134,7 @@ pub enum Prefix {
 /// This function accepts both `f32` and `f64` values. If you’re trying to
 /// format an integer, you’ll have to cast it first.
 pub fn decimal_prefix<F: Amounts>(amount: F) -> Result<F> {
-	format_number(amount, Amounts::get_1000(), [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
+	format_number(amount, Amounts::NUM_1000, [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
 }
 
 /// Formats the given floating-point number using **binary** prefixes,
@@ -141,7 +143,7 @@ pub fn decimal_prefix<F: Amounts>(amount: F) -> Result<F> {
 /// This function accepts both `f32` and `f64` values. If you’re trying to
 /// format an integer, you’ll have to cast it first.
 pub fn binary_prefix<F: Amounts>(amount: F) -> Result<F> {
-	format_number(amount, Amounts::get_1024(), [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
+	format_number(amount, Amounts::NUM_1024, [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
 }
 
 impl fmt::Display for Prefix {
@@ -229,18 +231,18 @@ where F: Float + Signed {
 
 /// Constructors for floating-point values for both the possible multipliers.
 pub trait Amounts: Float+Signed {
-    fn get_1000() -> Self;
-    fn get_1024() -> Self;
+    const NUM_1000: Self;
+    const NUM_1024: Self;
 }
 
 impl Amounts for f32 {
-    fn get_1000() -> f32 { 1000f32 }
-    fn get_1024() -> f32 { 1024f32 }
+    const NUM_1000: f32 = 1000f32;
+    const NUM_1024: f32 = 1024f32;
 }
 
 impl Amounts for f64 {
-    fn get_1000() -> f64 { 1000f64 }
-    fn get_1024() -> f64 { 1024f64 }
+    const NUM_1000: f64 = 1000f64;
+    const NUM_1024: f64 = 1024f64;
 }
 
 #[cfg(test)]
