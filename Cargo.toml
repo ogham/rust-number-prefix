@@ -3,11 +3,11 @@ name = "number_prefix"
 description = "Library for formatting numeric prefixes: kilo, giga, kibi."
 
 authors = [ "ogham@bsago.me" ]
-documentation = "http://ogham.rustdocs.org/number_prefix/"
+documentation = "https://docs.rs/number_prefix"
 homepage = "https://github.com/ogham/rust-number-prefix"
 license = "MIT"
 readme = "README.md"
-version = "0.2.5"
+version = "0.2.6"
 
 [dependencies]
 num = "0.1"

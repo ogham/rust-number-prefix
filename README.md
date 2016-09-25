@@ -2,7 +2,7 @@
 
 This is a library for formatting numbers with numeric prefixes, such as turning “3000 metres” into “3 kilometres”, or “8705 bytes” into “8.5 KiB”.
 
-### [View the Rustdoc](http://ogham.rustdocs.org/number_prefix)
+### [View the Rustdoc](https://docs.rs/number_prefix)
 
 
 # Installation
