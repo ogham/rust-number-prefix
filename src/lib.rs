@@ -90,8 +90,8 @@
 //! }
 //! ```
 
-extern crate num;
-use num::{Float, Signed};
+extern crate num_traits;
+use num_traits::{Float, Signed};
 use std::fmt;
 
 pub use Prefix::{
