@@ -2,6 +2,14 @@
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 
+#![deny(unsafe_code)]
+
+#![warn(missing_copy_implementations)]
+#![warn(missing_debug_implementations)]
+#![warn(trivial_numeric_casts)]
+#![warn(unreachable_pub)]
+
+
 //! This is a library for formatting numbers with numeric prefixes, such as
 //! turning “3000 metres” into “3 kilometres”, or “8705 bytes” into “8.5 KiB”.
 //!
@@ -89,6 +97,7 @@
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}bytes in size", n, prefix.lower()),
 //! }
 //! ```
+
 
 extern crate num_traits;
 use num_traits::{Float, Signed};
