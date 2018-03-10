@@ -7,7 +7,7 @@ documentation = "https://docs.rs/number_prefix"
 homepage = "https://github.com/ogham/rust-number-prefix"
 license = "MIT"
 readme = "README.md"
-version = "0.2.7"
+version = "0.2.8"
 
 [dependencies]
-num-traits = "0.1.36"
+num-traits = "0.2"

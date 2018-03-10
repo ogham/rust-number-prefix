@@ -11,8 +11,9 @@ This crate works with [Cargo](http://crates.io). Add the following to your `Carg
 
 ```toml
 [dependencies]
-number_prefix = "0.2.7"
+number_prefix = "0.2"
 ```
+
 
 # Usage
 
