@@ -144,6 +144,15 @@ pub enum Prefix {
 ///
 /// This function accepts both `f32` and `f64` values. If you’re trying to
 /// format an integer, you’ll have to cast it first.
+///
+/// # Examples
+///
+/// ```
+/// use number_prefix::{Prefix, Prefixed, decimal_prefix};
+///
+/// assert_eq!(decimal_prefix(1_000_000_000_f32),
+///            Prefixed(Prefix::Giga, 1_f32));
+/// ```
 pub fn decimal_prefix<F: Amounts>(amount: F) -> Result<F> {
 	format_number(amount, Amounts::get_1000(), [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
 }
@@ -153,6 +162,15 @@ pub fn decimal_prefix<F: Amounts>(amount: F) -> Result<F> {
 ///
 /// This function accepts both `f32` and `f64` values. If you’re trying to
 /// format an integer, you’ll have to cast it first.
+///
+/// # Examples
+///
+/// ```
+/// use number_prefix::{Prefix, Prefixed, binary_prefix};
+///
+/// assert_eq!(binary_prefix(1_073_741_824_f64),
+///            Prefixed(Prefix::Gibi, 1_f64));
+/// ```
 pub fn binary_prefix<F: Amounts>(amount: F) -> Result<F> {
 	format_number(amount, Amounts::get_1024(), [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
 }
