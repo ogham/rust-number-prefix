@@ -154,7 +154,7 @@ pub enum Prefix {
 ///            Prefixed(Prefix::Giga, 1_f32));
 /// ```
 pub fn decimal_prefix<F: Amounts>(amount: F) -> Result<F> {
-	format_number(amount, Amounts::get_1000(), [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
+	format_number(amount, Amounts::NUM_1000, [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
 }
 
 /// Formats the given floating-point number using **binary** prefixes,
@@ -172,7 +172,7 @@ pub fn decimal_prefix<F: Amounts>(amount: F) -> Result<F> {
 ///            Prefixed(Prefix::Gibi, 1_f64));
 /// ```
 pub fn binary_prefix<F: Amounts>(amount: F) -> Result<F> {
-	format_number(amount, Amounts::get_1024(), [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
+	format_number(amount, Amounts::NUM_1024, [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
 }
 
 impl fmt::Display for Prefix {
@@ -260,18 +260,18 @@ where F: Float + Signed {
 
 /// Constructors for floating-point values for both the possible multipliers.
 pub trait Amounts: Float+Signed {
-    fn get_1000() -> Self;
-    fn get_1024() -> Self;
+    const NUM_1000: Self;
+    const NUM_1024: Self;
 }
 
 impl Amounts for f32 {
-    fn get_1000() -> f32 { 1000f32 }
-    fn get_1024() -> f32 { 1024f32 }
+    const NUM_1000: f32 = 1000_f32;
+    const NUM_1024: f32 = 1024_f32;
 }
 
 impl Amounts for f64 {
-    fn get_1000() -> f64 { 1000f64 }
-    fn get_1024() -> f64 { 1024f64 }
+    const NUM_1000: f64 = 1000_f64;
+    const NUM_1024: f64 = 1024_f64;
 }
 
 #[cfg(test)]
