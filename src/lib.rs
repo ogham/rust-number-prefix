@@ -20,8 +20,9 @@
 //! and its prefix, or a notice that the number was too small to have any prefix
 //! applied to it. For example:
 //!
-//! ```rust
+//! ```
 //! use number_prefix::{decimal_prefix, Standalone, Prefixed};
+//!
 //! match decimal_prefix(8542_f32) {
 //!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
@@ -39,8 +40,9 @@
 //! If the value is too small to have any prefixes applied to it - in this case,
 //! if it’s under 1000 - then the standalone value will be returned:
 //!
-//! ```rust
+//! ```
 //! use number_prefix::{decimal_prefix, Standalone, Prefixed};
+//!
 //! match decimal_prefix(705_f32) {
 //!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
@@ -61,8 +63,9 @@
 //! number 1024 (2^10) as the multiplier, rather than the more common 1000
 //! (10^3). This uses the `binary_prefix` function. For example:
 //!
-//! ```rust
+//! ```
 //! use number_prefix::{binary_prefix, Standalone, Prefixed};
+//!
 //! match binary_prefix(8542_f32) {
 //!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
@@ -90,8 +93,9 @@
 //! symbol, import the `PrefixNames` trait, which adds methods to output the
 //! prefix in a variety of formats. For example:
 //!
-//! ```rust
+//! ```
 //! use number_prefix::{decimal_prefix, Standalone, Prefixed, PrefixNames};
+//!
 //! match decimal_prefix(8542_f32) {
 //!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}bytes in size", n, prefix.lower()),
