@@ -24,6 +24,7 @@ For example:
 
 ```rust
 use number_prefix::{decimal_prefix, Standalone, Prefixed};
+
 match decimal_prefix(8542_f32) {
     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
@@ -39,6 +40,7 @@ If the value is too small to have any prefixes applied to it - in this case, if 
 
 ```rust
 use number_prefix::{decimal_prefix, Standalone, Prefixed};
+
 match decimal_prefix(705_f32) {
     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
@@ -52,11 +54,12 @@ This is why the function pays attention to values without any prefixes - they of
 
 ## Binary Prefixes
 
-This library also allows you to use the *binary prefixes*, which use the number 1024 (2^10) as the multiplier, rather than the more common 1000 (10^3).
+This library also allows you to use the *binary prefixes*, which use the number 1024 (2<sup>10</sup>) as the multiplier, rather than the more common 1000 (10<sup>3</sup>).
 This uses the `binary_prefix` function. For example:
 
 ```rust
 use number_prefix::{binary_prefix, Standalone, Prefixed};
+
 match binary_prefix(8542_f32) {
     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
@@ -67,7 +70,7 @@ This will print out `"The file is 8.3 KiB in size"`.
 A kibibyte is slightly larger than a kilobyte, so the number is smaller in the result; but other than that, it works in exactly the same way, with the binary prefix being converted to a symbol automatically.
 
 
-### Which type of prefix should I use?
+## Which type of prefix should I use?
 
 There is no one way to answer this question!
 The prevailing theory is to use the binary prefixes for numbers of *bytes*, while still using the decimal prefixes for everything else.
@@ -82,6 +85,7 @@ the prefix in a variety of formats. For example:
 
 ```rust
 use number_prefix::{decimal_prefix, Standalone, Prefixed, PrefixNames};
+
 match decimal_prefix(8542_f32) {
     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
     Prefixed(prefix, n) => println!("The file is {:.0} {}bytes in size", n, prefix.lower()),
