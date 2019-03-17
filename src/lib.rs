@@ -175,7 +175,7 @@ impl<F: Amounts> NumberPrefix<F> {
     /// assert_eq!(NumberPrefix::decimal(1_000_000_000_f32),
     ///            NumberPrefix::Prefixed(Prefix::Giga, 1_f32));
     /// ```
-    pub fn decimal(amount: F) -> NumberPrefix<F> {
+    pub fn decimal(amount: F) -> Self {
         Self::format_number(amount, Amounts::NUM_1000, [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
     }
 
@@ -192,11 +192,11 @@ impl<F: Amounts> NumberPrefix<F> {
     /// assert_eq!(NumberPrefix::binary(1_073_741_824_f64),
     ///            NumberPrefix::Prefixed(Prefix::Gibi, 1_f64));
     /// ```
-    pub fn binary(amount: F) -> NumberPrefix<F> {
+    pub fn binary(amount: F) -> Self {
         Self::format_number(amount, Amounts::NUM_1024, [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
     }
 
-    fn format_number(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> NumberPrefix<F> {
+    fn format_number(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Self {
 
         // For negative numbers, flip it to positive, do the processing, then
         // flip it back to negative again afterwards.
@@ -283,8 +283,8 @@ pub trait Amounts: Copy + Sized + PartialOrd + Div<Output=Self> + Neg<Output=Sel
 }
 
 impl Amounts for f32 {
-    const NUM_1000: f32 = 1000_f32;
-    const NUM_1024: f32 = 1024_f32;
+    const NUM_1000: Self = 1000_f32;
+    const NUM_1024: Self = 1024_f32;
 
     fn is_negative(self) -> bool {
         self.is_sign_negative()
@@ -292,8 +292,8 @@ impl Amounts for f32 {
 }
 
 impl Amounts for f64 {
-    const NUM_1000: f64 = 1000_f64;
-    const NUM_1024: f64 = 1024_f64;
+    const NUM_1000: Self = 1000_f64;
+    const NUM_1024: Self = 1024_f64;
 
     fn is_negative(self) -> bool {
         self.is_sign_negative()
