@@ -1,5 +1,5 @@
 extern crate number_prefix;
-use number_prefix::{decimal_prefix, binary_prefix, Standalone, Prefixed};
+use number_prefix::{NumberPrefix, Standalone, Prefixed};
 
 fn main() {
 
@@ -9,12 +9,12 @@ fn main() {
     for _ in 0 .. 8 {
         n *= 1000_f64;
 
-        let decimal = match decimal_prefix(n) {
+        let decimal = match NumberPrefix::decimal(n) {
             Prefixed(prefix, n) => format!("{:.3} {}B", n, prefix),
             Standalone(_)       => unreachable!(),
         };
 
-        let binary = match binary_prefix(n) {
+        let binary = match NumberPrefix::binary(n) {
             Prefixed(prefix, n) => format!("{:.3} {}B", n, prefix),
             Standalone(n)       => format!("{} bytes still", n),
         };
@@ -31,12 +31,12 @@ fn main() {
     for _ in 0 .. 8 {
         n *= 1024_f64;
 
-        let decimal = match decimal_prefix(n) {
+        let decimal = match NumberPrefix::decimal(n) {
             Prefixed(prefix, n) => format!("{:.3} {}B", n, prefix),
             Standalone(_)       => unreachable!(),
         };
 
-        let binary = match binary_prefix(n) {
+        let binary = match NumberPrefix::binary(n) {
             Prefixed(prefix, n) => format!("{:.3} {}B", n, prefix),
             Standalone(_)       => unreachable!(),
         };
