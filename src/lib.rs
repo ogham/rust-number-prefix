@@ -3,7 +3,6 @@
 #![crate_type = "dylib"]
 
 #![deny(unsafe_code)]
-
 #![warn(missing_copy_implementations)]
 #![warn(missing_debug_implementations)]
 #![warn(trivial_numeric_casts)]
@@ -103,9 +102,13 @@
 //! ```
 
 
-extern crate num_traits;
-use num_traits::{Float, Signed};
-use std::fmt;
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(not(feature = "std"))]
+use core::ops::{Neg, Div};
+
+#[cfg(feature = "std")]
+use std::{fmt, ops::{Neg, Div}};
 
 pub use Prefix::{
 	Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
@@ -175,6 +178,7 @@ pub fn binary_prefix<F: Amounts>(amount: F) -> Result<F> {
 	format_number(amount, Amounts::NUM_1024, [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
 }
 
+#[cfg(feature = "std")]
 impl fmt::Display for Prefix {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f, "{}", self.symbol())
@@ -234,7 +238,7 @@ pub enum Result<F> {
 }
 
 fn format_number<F>(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Result<F>
-where F: Float + Signed {
+where F: Amounts {
 
     // For negative numbers, flip it to positive, do the processing, then
     // flip it back to negative again afterwards.
@@ -258,20 +262,38 @@ where F: Float + Signed {
     }
 }
 
-/// Constructors for floating-point values for both the possible multipliers.
-pub trait Amounts: Float+Signed {
+/// Traits for floating-point values for both the possible multipliers. They
+/// need to be Copy, have defined 1000 and 1024s, and implement a bunch of
+/// operators.
+pub trait Amounts: Copy + Sized + PartialOrd + Div<Output=Self> + Neg<Output=Self> {
+
+    /// The constant representing 1000, for decimal prefixes.
     const NUM_1000: Self;
+
+    /// The constant representing 1024, for binary prefixes.
     const NUM_1024: Self;
+
+    /// Whether this number is negative.
+    /// This is used internally.
+    fn is_negative(self) -> bool;
 }
 
 impl Amounts for f32 {
     const NUM_1000: f32 = 1000_f32;
     const NUM_1024: f32 = 1024_f32;
+
+    fn is_negative(self) -> bool {
+        self.is_sign_negative()
+    }
 }
 
 impl Amounts for f64 {
     const NUM_1000: f64 = 1000_f64;
     const NUM_1024: f64 = 1024_f64;
+
+    fn is_negative(self) -> bool {
+        self.is_sign_negative()
+    }
 }
 
 #[cfg(test)]

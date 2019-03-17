@@ -1,13 +1,20 @@
 [package]
 name = "number_prefix"
 description = "Library for formatting numeric prefixes: kilo, giga, kibi."
-
-authors = [ "ogham@bsago.me" ]
-documentation = "https://docs.rs/number_prefix"
-homepage = "https://github.com/ogham/rust-number-prefix"
-license = "MIT"
-readme = "README.md"
 version = "0.2.8"
 
-[dependencies]
-num-traits = "0.2"
+authors = [ "Benjamin Sago <ogham@bsago.me>" ]
+categories = ["algorithms", "no-std"]
+documentation = "https://docs.rs/number_prefix"
+repository = "https://github.com/ogham/rust-number-prefix"
+keywords = ["mathematics", "numerics"]
+license = "MIT"
+readme = "README.md"
+
+
+[features]
+default = ["std"]
+std = []
+
+[package.metadata.docs.rs]
+features = ["std"]

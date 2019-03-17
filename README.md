@@ -14,6 +14,8 @@ This crate works with [Cargo](http://crates.io). Add the following to your `Carg
 number_prefix = "0.2"
 ```
 
+This crate has `no_std` support. To activate it, disable the `std` Cargo feature.
+
 
 # Usage
 
