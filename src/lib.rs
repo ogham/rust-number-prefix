@@ -111,7 +111,7 @@
 use core::ops::{Neg, Div};
 
 #[cfg(feature = "std")]
-use std::{fmt, ops::{Neg, Div}};
+use std::{error::Error, fmt, str, ops::{Neg, Div}};
 
 pub use Prefix::{
 	Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
@@ -228,6 +228,46 @@ impl fmt::Display for Prefix {
 	}
 }
 
+#[cfg(feature = "std")]
+impl<T: str::FromStr> str::FromStr for NumberPrefix<T> {
+    type Err = NumberPrefixParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let splitted = s.find(|p| {
+            p == 'k' || p == 'K' || p == 'M' || p == 'G' || p == 'T' ||
+            p == 'P' || p == 'E' || p == 'Z' || p == 'Y'
+        });
+        let num_prefix = s.split_at(splitted.unwrap_or(s.len()));
+        let num = match num_prefix.0.trim().parse::<T>() {
+            Ok(n) => n,
+            Err(_) => return Err(NumberPrefixParseError(())),
+        };
+        let prefix_unit = num_prefix.1.trim_matches(|p|
+                p == 'b' || p == 'B' || p == 'm'
+            );
+        let prefix = match prefix_unit {
+            "k" | "K" => Prefix::Kilo,
+            "M" => Prefix::Mega,
+            "G" => Prefix::Giga,
+            "T" => Prefix::Tera,
+            "P" => Prefix::Peta,
+            "E" => Prefix::Exa,
+            "Z" => Prefix::Zetta,
+            "Y" => Prefix::Yotta,
+            "Ki" => Prefix::Kibi,
+            "Mi" => Prefix::Mibi,
+            "Gi" => Prefix::Gibi,
+            "Ti" => Prefix::Tebi,
+            "Pi" => Prefix::Pebi,
+            "Ei" => Prefix::Exbi,
+            "Zi" => Prefix::Zebi,
+            "Yi" => Prefix::Yobi,
+            "" => return Ok(NumberPrefix::Standalone(num)),
+            _ => return Err(NumberPrefixParseError(())),
+        };
+        Ok(NumberPrefix::Prefixed(prefix, num))
+    }
+}
+
 impl PrefixNames for Prefix {
     fn upper(&self) -> &'static str {
         match *self {
@@ -297,6 +337,21 @@ impl Amounts for f64 {
 
     fn is_negative(self) -> bool {
         self.is_sign_negative()
+    }
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct NumberPrefixParseError(());
+
+impl fmt::Display for NumberPrefixParseError {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt.write_str(self.description())
+    }
+}
+
+impl Error for NumberPrefixParseError {
+    fn description(&self) -> &str {
+        "invalid prefix syntax"
     }
 }
 
@@ -425,5 +480,24 @@ mod test {
 		};
 
 		assert_eq!(result, "The file is 8.3 KiB in size");
+    }
+
+    #[test]
+    fn parse_examples() {
+        let parse_example_a = "7.05E".parse::<NumberPrefix<f64>>();
+        let parse_example_b = "7.05".parse::<NumberPrefix<f64>>();
+        let parse_example_c = "7.05 GiB".parse::<NumberPrefix<f64>>();
+
+        assert_eq!(parse_example_a, Ok(NumberPrefix::Prefixed(Exa, 7.05_f64)));
+        assert_eq!(parse_example_b, Ok(NumberPrefix::Standalone(7.05_f64)));
+        assert_eq!(parse_example_c, Ok(NumberPrefix::Prefixed(Gibi, 7.05_f64)));
+    }
+
+    #[test]
+    #[should_panic]
+    fn bad_parse() {
+        let parsed = "bogo meters per second".parse::<NumberPrefix<f64>>();
+
+        assert_eq!(parsed, Ok(NumberPrefix::Prefixed(Kilo, 7.05_f64)));
     }
 }
