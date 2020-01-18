@@ -101,6 +101,28 @@
 //!     Prefixed(prefix, n) => println!("The file is {:.0} {}bytes in size", n, prefix.lower()),
 //! }
 //! ```
+//!
+//!
+//! ## String parsing
+//!
+//! There is a `FromStr` implementation for `NumberPrefix` that parses
+//! strings containing numbers and trailing prefixes, such as `7.5E`.
+//!
+//! Currently, the only supported units are `b` and `B` for bytes, and `m` for
+//! metres. Whitespace is allowed between the number and the rest of the string.
+//!
+//! ```
+//! use number_prefix::{NumberPrefix, Exa, Gibi};
+//!
+//! assert_eq!("7.05E".parse::<NumberPrefix<_>>(),
+//!            Ok(NumberPrefix::Prefixed(Exa, 7.05_f64)));
+//!
+//! assert_eq!("7.05".parse::<NumberPrefix<_>>(),
+//!            Ok(NumberPrefix::Standalone(7.05_f64)));
+//!
+//! assert_eq!("7.05 GiB".parse::<NumberPrefix<_>>(),
+//!            Ok(NumberPrefix::Prefixed(Gibi, 7.05_f64)));
+//! ```
 
 
 #![cfg_attr(not(feature = "std"), no_std)]
