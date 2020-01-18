@@ -16,6 +16,8 @@ number_prefix = "0.3"
 
 This crate has `no_std` support. To activate it, disable the `std` Cargo feature.
 
+The earliest version of Rust that this crate is tested against is [Rust v1.31.0](https://blog.rust-lang.org/2018/12/06/Rust-1.31-and-rust-2018.html).
+
 
 # Usage
 
