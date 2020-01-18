@@ -1,12 +1,10 @@
-#![crate_name = "number_prefix"]
-#![crate_type = "rlib"]
-#![crate_type = "dylib"]
-
 #![deny(unsafe_code)]
 #![warn(missing_copy_implementations)]
 #![warn(missing_debug_implementations)]
+#![warn(nonstandard_style)]
 #![warn(trivial_numeric_casts)]
 #![warn(unreachable_pub)]
+#![warn(unused)]
 
 
 //! This is a library for formatting numbers with numeric prefixes, such as
