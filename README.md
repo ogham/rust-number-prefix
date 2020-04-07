@@ -99,12 +99,10 @@ Computers work with powers of two, rather than powers of ten, and by using the b
 
 ## Prefix Names
 
-If you need to describe your unit in actual words, rather than just with
-the symbol, import the `PrefixNames` trait, which adds methods to output
-the prefix in a variety of formats. For example:
+If you need to describe your unit in actual words, rather than just with the symbol, use one of the `upper`, `caps`, `lower`, or `symbol`, which output the prefix in a variety of formats. For example:
 
 ```rust
-use number_prefix::{NumberPrefix, PrefixNames};
+use number_prefix::NumberPrefix;
 
 let amount = 8542_f32;
 let result = match NumberPrefix::decimal(amount) {

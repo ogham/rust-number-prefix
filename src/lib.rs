@@ -109,11 +109,11 @@
 //! ## Prefix Names
 //!
 //! If you need to describe your unit in actual words, rather than just with the
-//! symbol, import the `PrefixNames` trait, which adds methods to output the
+//! symbol, use one of the `upper`, `caps`, `lower`, or `symbol`, which output the
 //! prefix in a variety of formats. For example:
 //!
 //! ```
-//! use number_prefix::{NumberPrefix, PrefixNames};
+//! use number_prefix::NumberPrefix;
 //!
 //! let amount = 8542_f32;
 //! let result = match NumberPrefix::decimal(amount) {
@@ -166,23 +166,6 @@ pub use Prefix::{
 	Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
 };
 
-
-/// Formatting methods for prefix, for when you want to output things other
-/// than just the short-hand symbols.
-pub trait PrefixNames {
-
-	/// Returns the name in uppercase, such as “KILO”.
-    fn upper(&self) -> &'static str;
-
-    /// Returns the name with the first letter capitalised, such as “Mega”.
-    fn caps(&self) -> &'static str;
-
-    /// Returns the name in lowercase, such as “giga”.
-    fn lower(&self) -> &'static str;
-
-    /// Returns the short-hand symbol, such as “T” (for “tera”).
-    fn symbol(&self) -> &'static str;
-}
 
 /// A numeric prefix, either binary or decimal.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -274,8 +257,10 @@ impl fmt::Display for Prefix {
 	}
 }
 
-impl PrefixNames for Prefix {
-    fn upper(&self) -> &'static str {
+impl Prefix {
+
+	/// Returns the name in uppercase, such as “KILO”.
+    pub fn upper(&self) -> &'static str {
         match *self {
             Kilo => "KILO",  Mega => "MEGA",  Giga  => "GIGA",   Tera  => "TERA",
             Peta => "PETA",  Exa  => "EXA",   Zetta => "ZETTA",  Yotta => "YOTTA",
@@ -284,7 +269,8 @@ impl PrefixNames for Prefix {
         }
     }
 
-    fn caps(&self) -> &'static str {
+    /// Returns the name with the first letter capitalised, such as “Mega”.
+    pub fn caps(&self) -> &'static str {
         match *self {
             Kilo => "Kilo",  Mega => "Mega",  Giga  => "Giga",   Tera  => "Tera",
             Peta => "Peta",  Exa  => "Exa",   Zetta => "Zetta",  Yotta => "Yotta",
@@ -293,7 +279,8 @@ impl PrefixNames for Prefix {
         }
     }
 
-    fn lower(&self) -> &'static str {
+    /// Returns the name in lowercase, such as “giga”.
+    pub fn lower(&self) -> &'static str {
         match *self {
             Kilo => "kilo",  Mega => "mega",  Giga  => "giga",   Tera  => "tera",
             Peta => "peta",  Exa  => "exa",   Zetta => "zetta",  Yotta => "yotta",
@@ -302,7 +289,8 @@ impl PrefixNames for Prefix {
         }
     }
 
-    fn symbol(&self) -> &'static str {
+    /// Returns the short-hand symbol, such as “T” (for “tera”).
+    pub fn symbol(&self) -> &'static str {
         match *self {
             Kilo => "k",   Mega => "M",   Giga  => "G",   Tera  => "T",
             Peta => "P",   Exa  => "E",   Zetta => "Z",   Yotta => "Y",
