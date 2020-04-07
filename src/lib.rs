@@ -327,14 +327,11 @@ pub struct NumberPrefixParseError(());
 
 impl fmt::Display for NumberPrefixParseError {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt.write_str(self.description())
+        fmt.write_str("invalid prefix syntax")
     }
 }
 
 impl Error for NumberPrefixParseError {
-    fn description(&self) -> &str {
-        "invalid prefix syntax"
-    }
 }
 
 #[cfg(test)]
