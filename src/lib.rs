@@ -159,7 +159,7 @@ mod parse;
 use core::ops::{Neg, Div};
 
 #[cfg(feature = "std")]
-use std::{error::Error, fmt, str, ops::{Neg, Div}};
+use std::{fmt, str, ops::{Neg, Div}};
 
 pub use Prefix::{
 	Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
@@ -346,17 +346,6 @@ impl Amounts for f64 {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub struct NumberPrefixParseError(());
-
-impl fmt::Display for NumberPrefixParseError {
-    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt.write_str("invalid prefix syntax")
-    }
-}
-
-impl Error for NumberPrefixParseError {
-}
 
 #[cfg(test)]
 mod test {

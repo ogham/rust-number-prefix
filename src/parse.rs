@@ -1,5 +1,8 @@
 use super::*;
 
+#[cfg(feature = "std")]
+use std::error::Error;
+
 
 #[cfg(feature = "std")]
 impl<T: str::FromStr> str::FromStr for NumberPrefix<T> {
@@ -45,6 +48,20 @@ impl<T: str::FromStr> str::FromStr for NumberPrefix<T> {
 
         Ok(NumberPrefix::Prefixed(prefix, num))
     }
+}
+
+
+/// The error returned when a `NumberPrefix` is failed to be parsed.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct NumberPrefixParseError(());
+
+impl fmt::Display for NumberPrefixParseError {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt.write_str("invalid prefix syntax")
+    }
+}
+
+impl Error for NumberPrefixParseError {
 }
 
 
