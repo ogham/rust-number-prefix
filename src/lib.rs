@@ -322,6 +322,15 @@ impl fmt::Display for Prefix {
 impl Prefix {
 
 	/// Returns the name in uppercase, such as “KILO”.
+	///
+	/// # Examples
+	///
+	/// ```
+	/// use number_prefix::Prefix;
+	///
+	/// assert_eq!("GIGA", Prefix::Giga.upper());
+	/// assert_eq!("GIBI", Prefix::Gibi.upper());
+	/// ```
     pub fn upper(self) -> &'static str {
         use self::Prefix::*;
         match self {
@@ -333,6 +342,15 @@ impl Prefix {
     }
 
     /// Returns the name with the first letter capitalised, such as “Mega”.
+    ///
+	/// # Examples
+	///
+	/// ```
+	/// use number_prefix::Prefix;
+	///
+	/// assert_eq!("Giga", Prefix::Giga.caps());
+	/// assert_eq!("Gibi", Prefix::Gibi.caps());
+	/// ```
     pub fn caps(self) -> &'static str {
         use self::Prefix::*;
         match self {
@@ -344,6 +362,15 @@ impl Prefix {
     }
 
     /// Returns the name in lowercase, such as “giga”.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use number_prefix::Prefix;
+    ///
+    /// assert_eq!("giga", Prefix::Giga.lower());
+    /// assert_eq!("gibi", Prefix::Gibi.lower());
+    /// ```
     pub fn lower(self) -> &'static str {
         use self::Prefix::*;
         match self {
@@ -355,6 +382,15 @@ impl Prefix {
     }
 
     /// Returns the short-hand symbol, such as “T” (for “tera”).
+    ///
+	/// # Examples
+	///
+	/// ```
+	/// use number_prefix::Prefix;
+	///
+	/// assert_eq!("G",  Prefix::Giga.symbol());
+	/// assert_eq!("Gi", Prefix::Gibi.symbol());
+	/// ```
     pub fn symbol(self) -> &'static str {
         use self::Prefix::*;
         match self {
