@@ -1,6 +1,7 @@
 #![deny(unsafe_code)]
 #![warn(missing_copy_implementations)]
 #![warn(missing_debug_implementations)]
+#![warn(missing_docs)]
 #![warn(nonstandard_style)]
 #![warn(trivial_numeric_casts)]
 #![warn(unreachable_pub)]
@@ -166,8 +167,71 @@ use std::{fmt, ops::{Neg, Div}};
 /// A numeric prefix, either binary or decimal.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Prefix {
-    Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
-    Kibi, Mebi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
+
+    /// _kilo_, 10<sup>3</sup> or 1000<sup>1</sup>.
+    /// From the Greek ‘χίλιοι’ (‘chilioi’), meaning ‘thousand’.
+    Kilo,
+
+    /// _mega_, 10<sup>6</sup> or 1000<sup>2</sup>.
+    /// From the Ancient Greek ‘μέγας’ (‘megas’), meaning ‘great’.
+    Mega,
+
+    /// _giga_, 10<sup>9</sup> or 1000<sup>3</sup>.
+    /// From the Greek ‘γίγας’ (‘gigas’), meaning ‘giant’.
+    Giga,
+
+    /// _tera_, 10<sup>12</sup> or 1000<sup>4</sup>.
+    /// From the Greek ‘τέρας’ (‘teras’), meaning ‘monster’.
+    Tera,
+
+    /// _peta_, 10<sup>15</sup> or 1000<sup>5</sup>.
+    /// From the Greek ‘πέντε’ (‘pente’), meaning ‘five’.
+    Peta,
+
+    /// _exa_, 10<sup>18</sup> or 1000<sup>6</sup>.
+    /// From the Greek ‘ἕξ’ (‘hex’), meaning ‘six’.
+    Exa,
+
+    /// _zetta_, 10<sup>21</sup> or 1000<sup>7</sup>.
+    /// From the Latin ‘septem’, meaning ‘seven’.
+    Zetta,
+
+    /// _yotta_, 10<sup>24</sup> or 1000<sup>8</sup>.
+    /// From the Green ‘οκτώ’ (‘okto’), meaning ‘eight’.
+    Yotta,
+
+    /// _kibi_, 2<sup>10</sup> or 1024<sup>1</sup>.
+    /// The binary version of _kilo_.
+    Kibi,
+
+    /// _mebi_, 2<sup>20</sup> or 1024<sup>2</sup>.
+    /// The binary version of _mega_.
+    Mebi,
+
+    /// _gibi_, 2<sup>30</sup> or 1024<sup>3</sup>.
+    /// The binary version of _giga_.
+    Gibi,
+
+    /// _tebi_, 2<sup>40</sup> or 1024<sup>4</sup>.
+    /// The binary version of _tera_.
+    Tebi,
+
+    /// _pebi_, 2<sup>50</sup> or 1024<sup>5</sup>.
+    /// The binary version of _peta_.
+    Pebi,
+
+    /// _exbi_, 2<sup>60</sup> or 1024<sup>6</sup>.
+    /// The binary version of _exa_.
+    Exbi,
+    // you can download exa binaries at https://exa.website/#installation
+
+    /// _zebi_, 2<sup>70</sup> or 1024<sup>7</sup>.
+    /// The binary version of _zetta_.
+    Zebi,
+
+    /// _yobi_, 2<sup>80</sup> or 1024<sup>8</sup>.
+    /// The binary version of _yotta_.
+    Yobi,
 }
 
 
