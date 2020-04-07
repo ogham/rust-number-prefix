@@ -25,15 +25,21 @@ The function `NumberPrefix::decimal` returns either a pair of the resulting numb
 For example:
 
 ```rust
-use number_prefix::{NumberPrefix, Standalone, Prefixed};
+use number_prefix::NumberPrefix;
 
-match NumberPrefix::decimal(8542_f32) {
-    Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
-    Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
-}
+let amount = 8542_f32;
+let result = match NumberPrefix::decimal(amount) {
+    NumberPrefix::Standalone(bytes) => {
+        format!("The file is {} bytes in size", bytes)
+    }
+    NumberPrefix::Prefixed(prefix, n) => {
+        format!("The file is {:.1} {}B in size", n, prefix)
+    }
+};
+
+assert_eq!("The file is 8.5 kB in size", result);
 ```
 
-This will print out `"The file is 8.5 kB in size"`.
 The `{:.0}` part of the formatting string tells it to restrict the output to only one decimal place.
 This value is calculated by repeatedly dividing the number by 1000 until it becomes less than that, which in this case results in 8.542, which gets rounded down.
 Because only one division had to take place, the function also returns the decimal prefix `Kilo`, which gets converted to its internationally-recognised symbol when formatted as a string.
@@ -41,15 +47,21 @@ Because only one division had to take place, the function also returns the decim
 If the value is too small to have any prefixes applied to it — in this case, if it’s under 1000 — then the standalone value will be returned:
 
 ```rust
-use number_prefix::{NumberPrefix, Standalone, Prefixed};
+use number_prefix::NumberPrefix;
 
-match NumberPrefix::decimal(705_f32) {
-    Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
-    Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
-}
+let amount = 705_f32;
+let result = match NumberPrefix::decimal(amount) {
+    NumberPrefix::Standalone(bytes) => {
+        format!("The file is {} bytes in size", bytes)
+    }
+    NumberPrefix::Prefixed(prefix, n) => {
+        format!("The file is {:.1} {}B in size", n, prefix)
+    }
+};
+
+assert_eq!("The file is 705 bytes in size", result);
 ```
 
-This will print out `"The file is 705 bytes in size"`, having chosen the other path to follow.
 In this particular example, the user expects different formatting for both bytes and kilobytes: while prefixed values are given more precision, there’s no point using anything other than whole numbers for just byte amounts.
 This is why the function pays attention to values without any prefixes — they often need to be special-cased.
 
@@ -60,15 +72,21 @@ This library also allows you to use the *binary prefixes*, which use the number 
 This uses the `NumberPrefix::binary` function. For example:
 
 ```rust
-use number_prefix::{NumberPrefix, Standalone, Prefixed};
+use number_prefix::NumberPrefix;
 
-match NumberPrefix::binary(8542_f32) {
-    Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
-    Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
-}
+let amount = 8542_f32;
+let result = match NumberPrefix::binary(amount) {
+    NumberPrefix::Standalone(bytes) => {
+        format!("The file is {} bytes in size", bytes)
+    }
+    NumberPrefix::Prefixed(prefix, n) => {
+        format!("The file is {:.1} {}B in size", n, prefix)
+    }
+};
+
+assert_eq!("The file is 8.3 KiB in size", result);
 ```
 
-This will print out `"The file is 8.3 KiB in size"`.
 A kibibyte is slightly larger than a kilobyte, so the number is smaller in the result; but other than that, it works in exactly the same way, with the binary prefix being converted to a symbol automatically.
 
 
@@ -86,12 +104,19 @@ the symbol, import the `PrefixNames` trait, which adds methods to output
 the prefix in a variety of formats. For example:
 
 ```rust
-use number_prefix::{NumberPrefix, Standalone, Prefixed, PrefixNames};
+use number_prefix::{NumberPrefix, PrefixNames};
 
-match NumberPrefix::decimal(8542_f32) {
-    Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
-    Prefixed(prefix, n) => println!("The file is {:.0} {}bytes in size", n, prefix.lower()),
-}
+let amount = 8542_f32;
+let result = match NumberPrefix::decimal(amount) {
+    NumberPrefix::Standalone(bytes) => {
+        format!("The file is {} bytes in size", bytes)
+    }
+    NumberPrefix::Prefixed(prefix, n) => {
+        format!("The file is {:.1} {}bytes in size", n, prefix.lower())
+    }
+};
+
+assert_eq!("The file is 8.5 kilobytes in size", result);
 ```
 
 

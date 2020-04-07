@@ -19,40 +19,53 @@
 //! example:
 //!
 //! ```
-//! use number_prefix::{NumberPrefix, Standalone, Prefixed};
+//! use number_prefix::NumberPrefix;
 //!
-//! match NumberPrefix::decimal(8542_f32) {
-//!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
-//!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
-//! }
+//! let amount = 8542_f32;
+//! let result = match NumberPrefix::decimal(amount) {
+//!     NumberPrefix::Standalone(bytes) => {
+//!         format!("The file is {} bytes in size", bytes)
+//!     }
+//!     NumberPrefix::Prefixed(prefix, n) => {
+//!         format!("The file is {:.1} {}B in size", n, prefix)
+//!     }
+//! };
+//!
+//! assert_eq!("The file is 8.5 kB in size", result);
 //! ```
 //!
-//! This will print out `"The file is 8.5 kB in size"`. The `{:.0}` part of the
-//! formatting string tells it to restrict the output to only one decimal place.
-//! This value is calculated by repeatedly dividing the number by 1000 until it
-//! becomes less than that, which in this case results in 8.542, which gets
-//! rounded down. Because only one division had to take place, the function also
-//! returns the decimal prefix `Kilo`, which gets converted to its
-//! internationally-recognised symbol when formatted as a string.
+//! The `{:.0}` part of the formatting string tells it to restrict the
+//! output to only one decimal place. This value is calculated by repeatedly
+//! dividing the number by 1000 until it becomes less than that, which in this
+//! case results in 8.542, which gets rounded down. Because only one division
+//! had to take place, the function also returns the decimal prefix `Kilo`,
+//! which gets converted to its internationally-recognised symbol when
+//! formatted as a string.
 //!
 //! If the value is too small to have any prefixes applied to it — in this case,
 //! if it’s under 1000 — then the standalone value will be returned:
 //!
 //! ```
-//! use number_prefix::{NumberPrefix, Standalone, Prefixed};
+//! use number_prefix::NumberPrefix;
 //!
-//! match NumberPrefix::decimal(705_f32) {
-//!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
-//!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
-//! }
+//! let amount = 705_f32;
+//! let result = match NumberPrefix::decimal(amount) {
+//!     NumberPrefix::Standalone(bytes) => {
+//!         format!("The file is {} bytes in size", bytes)
+//!     }
+//!     NumberPrefix::Prefixed(prefix, n) => {
+//!         format!("The file is {:.1} {}B in size", n, prefix)
+//!     }
+//! };
+//!
+//! assert_eq!("The file is 705 bytes in size", result);
 //! ```
 //!
-//! This will print out `"The file is 705 bytes in size"`, having chosen the
-//! other path to follow. In this particular example, the user expects different
-//! formatting for both bytes and kilobytes: while prefixed values are given
-//! more precision, there’s no point using anything other than whole numbers for
-//! just byte amounts. This is why the function pays attention to values without
-//! any prefixes — they often need to be special-cased.
+//! In this particular example, the user expects different formatting for
+//! both bytes and kilobytes: while prefixed values are given more precision,
+//! there’s no point using anything other than whole numbers for just byte
+//! amounts. This is why the function pays attention to values without any
+//! prefixes — they often need to be special-cased.
 //!
 //!
 //! ## Binary Prefixes
@@ -64,18 +77,24 @@
 //! For example:
 //!
 //! ```
-//! use number_prefix::{NumberPrefix, Standalone, Prefixed};
+//! use number_prefix::NumberPrefix;
 //!
-//! match NumberPrefix::binary(8542_f32) {
-//!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
-//!     Prefixed(prefix, n) => println!("The file is {:.0} {}B in size", n, prefix),
-//! }
+//! let amount = 8542_f32;
+//! let result = match NumberPrefix::binary(amount) {
+//!     NumberPrefix::Standalone(bytes) => {
+//!         format!("The file is {} bytes in size", bytes)
+//!     }
+//!     NumberPrefix::Prefixed(prefix, n) => {
+//!         format!("The file is {:.1} {}B in size", n, prefix)
+//!     }
+//! };
+//!
+//! assert_eq!("The file is 8.3 KiB in size", result);
 //! ```
 //!
-//! This will print out `"The file is 8.3 KiB in size"`. A kibibyte is slightly
-//! larger than a kilobyte, so the number is smaller in the result; but other
-//! than that, it works in exactly the same way, with the binary prefix being
-//! converted to a symbol automatically.
+//! A kibibyte is slightly larger than a kilobyte, so the number is smaller
+//! in the result; but other than that, it works in exactly the same way, with
+//! the binary prefix being converted to a symbol automatically.
 //!
 //!
 //! ## Which type of prefix should I use?
@@ -94,12 +113,19 @@
 //! prefix in a variety of formats. For example:
 //!
 //! ```
-//! use number_prefix::{NumberPrefix, Standalone, Prefixed, PrefixNames};
+//! use number_prefix::{NumberPrefix, PrefixNames};
 //!
-//! match NumberPrefix::decimal(8542_f32) {
-//!     Standalone(bytes)   => println!("The file is {} bytes in size", bytes),
-//!     Prefixed(prefix, n) => println!("The file is {:.0} {}bytes in size", n, prefix.lower()),
-//! }
+//! let amount = 8542_f32;
+//! let result = match NumberPrefix::decimal(amount) {
+//!     NumberPrefix::Standalone(bytes) => {
+//!         format!("The file is {} bytes in size", bytes)
+//!     }
+//!     NumberPrefix::Prefixed(prefix, n) => {
+//!         format!("The file is {:.1} {}bytes in size", n, prefix.lower())
+//!     }
+//! };
+//!
+//! assert_eq!("The file is 8.5 kilobytes in size", result);
 //! ```
 //!
 //!
@@ -139,8 +165,6 @@ pub use Prefix::{
 	Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
 	Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
 };
-
-pub use NumberPrefix::{Standalone, Prefixed};
 
 
 /// Formatting methods for prefix, for when you want to output things other
@@ -336,106 +360,124 @@ impl Error for NumberPrefixParseError {
 
 #[cfg(test)]
 mod test {
-    use super::{NumberPrefix, Standalone, Prefixed};
+    use super::NumberPrefix;
     use super::{Kilo, Giga, Tera, Peta, Exa, Zetta, Yotta, Kibi, Mibi, Gibi};
 
 	#[test]
 	fn decimal_minus_one_billion() {
-	    assert_eq!(NumberPrefix::decimal(-1_000_000_000_f64), Prefixed(Giga, -1f64))
+	    assert_eq!(NumberPrefix::decimal(-1_000_000_000_f64),
+	               NumberPrefix::Prefixed(Giga, -1f64))
 	}
 
     #[test]
     fn decimal_minus_one() {
-        assert_eq!(NumberPrefix::decimal(-1f64), Standalone(-1f64))
+        assert_eq!(NumberPrefix::decimal(-1f64),
+                   NumberPrefix::Standalone(-1f64))
     }
 
     #[test]
     fn decimal_0() {
-        assert_eq!(NumberPrefix::decimal(0f64), Standalone(0f64))
+        assert_eq!(NumberPrefix::decimal(0f64),
+                   NumberPrefix::Standalone(0f64))
     }
 
     #[test]
     fn decimal_999() {
-        assert_eq!(NumberPrefix::decimal(999f32), Standalone(999f32))
+        assert_eq!(NumberPrefix::decimal(999f32),
+                   NumberPrefix::Standalone(999f32))
     }
 
     #[test]
     fn decimal_1000() {
-        assert_eq!(NumberPrefix::decimal(1000f32), Prefixed(Kilo, 1f32))
+        assert_eq!(NumberPrefix::decimal(1000f32),
+                   NumberPrefix::Prefixed(Kilo, 1f32))
     }
 
     #[test]
     fn decimal_1030() {
-        assert_eq!(NumberPrefix::decimal(1030f32), Prefixed(Kilo, 1.03f32))
+        assert_eq!(NumberPrefix::decimal(1030f32),
+                   NumberPrefix::Prefixed(Kilo, 1.03f32))
     }
 
     #[test]
     fn decimal_1100() {
-        assert_eq!(NumberPrefix::decimal(1100f64), Prefixed(Kilo, 1.1f64))
+        assert_eq!(NumberPrefix::decimal(1100f64),
+                   NumberPrefix::Prefixed(Kilo, 1.1f64))
     }
 
     #[test]
     fn decimal_1111() {
-        assert_eq!(NumberPrefix::decimal(1111f64), Prefixed(Kilo, 1.111f64))
+        assert_eq!(NumberPrefix::decimal(1111f64),
+                   NumberPrefix::Prefixed(Kilo, 1.111f64))
     }
 
     #[test]
     fn binary_126456() {
-        assert_eq!(NumberPrefix::binary(126_456f32), Prefixed(Kibi, 123.492188f32))
+        assert_eq!(NumberPrefix::binary(126_456f32),
+                   NumberPrefix::Prefixed(Kibi, 123.492188f32))
     }
 
     #[test]
     fn binary_1048576() {
-        assert_eq!(NumberPrefix::binary(1_048_576f64), Prefixed(Mibi, 1f64))
+        assert_eq!(NumberPrefix::binary(1_048_576f64),
+                   NumberPrefix::Prefixed(Mibi, 1f64))
     }
 
     #[test]
     fn binary_1073741824() {
-        assert_eq!(NumberPrefix::binary(2_147_483_648f32), Prefixed(Gibi, 2f32))
+        assert_eq!(NumberPrefix::binary(2_147_483_648f32),
+                   NumberPrefix::Prefixed(Gibi, 2f32))
     }
 
     #[test]
     fn giga() {
-    	assert_eq!(NumberPrefix::decimal(1_000_000_000f64), Prefixed(Giga, 1f64))
+    	assert_eq!(NumberPrefix::decimal(1_000_000_000f64),
+    	           NumberPrefix::Prefixed(Giga, 1f64))
     }
 
     #[test]
     fn tera() {
-    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000f64), Prefixed(Tera, 1f64))
+    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000f64),
+    	           NumberPrefix::Prefixed(Tera, 1f64))
     }
 
     #[test]
     fn peta() {
-    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000f64), Prefixed(Peta, 1f64))
+    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000f64),
+    	           NumberPrefix::Prefixed(Peta, 1f64))
     }
 
     #[test]
     fn exa() {
-    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000f64), Prefixed(Exa, 1f64))
+    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000f64),
+    	           NumberPrefix::Prefixed(Exa, 1f64))
     }
 
     #[test]
     fn zetta() {
-    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000f64), Prefixed(Zetta, 1f64))
+    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000f64),
+    	           NumberPrefix::Prefixed(Zetta, 1f64))
     }
 
     #[test]
     fn yotta() {
-    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000_000f64), Prefixed(Yotta, 1f64))
+    	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000_000f64),
+    	           NumberPrefix::Prefixed(Yotta, 1f64))
     }
 
     #[test]
     #[allow(overflowing_literals)]
     fn and_so_on() {
     	// When you hit yotta, don't keep going
-		assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000_000_000f64), Prefixed(Yotta, 1000f64))
+		assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000_000_000f64),
+		           NumberPrefix::Prefixed(Yotta, 1000f64))
     }
 
     #[test]
     fn example_one() {
 		let result = match NumberPrefix::decimal(8542_f32) {
-			Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
-			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
+			NumberPrefix::Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
+			NumberPrefix::Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
 
 		assert_eq!(result, "The file is 8.5 kB in size");
@@ -444,8 +486,8 @@ mod test {
     #[test]
     fn example_two() {
 		let result = match NumberPrefix::decimal(705_f32) {
-			Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
-			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
+			NumberPrefix::Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
+			NumberPrefix::Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
 
 		assert_eq!(result, "The file is 705 bytes in size");
@@ -454,8 +496,8 @@ mod test {
 	#[test]
     fn example_three() {
 		let result = match NumberPrefix::binary(8542_f32) {
-			Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
-			Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
+			NumberPrefix::Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
+			NumberPrefix::Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
 		};
 
 		assert_eq!(result, "The file is 8.3 KiB in size");

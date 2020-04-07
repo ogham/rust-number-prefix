@@ -23,7 +23,7 @@
 /// ```
 
 extern crate number_prefix;
-use number_prefix::{NumberPrefix, Standalone, Prefixed};
+use number_prefix::NumberPrefix;
 use std::fmt::Display;
 
 
@@ -55,7 +55,7 @@ fn main() {
 
 fn format_prefix<T: Display>(np: NumberPrefix<T>) -> String {
     match np {
-        Prefixed(prefix, n)  => format!("{:.3} {}B", n, prefix),
-        Standalone(bytes)    => format!("{} bytes", bytes),
+        NumberPrefix::Prefixed(prefix, n)  => format!("{:.3} {}B", n, prefix),
+        NumberPrefix::Standalone(bytes)    => format!("{} bytes", bytes),
     }
 }
