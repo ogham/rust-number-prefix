@@ -34,7 +34,7 @@
 //! assert_eq!("The file is 8.5 kB in size", result);
 //! ```
 //!
-//! The `{:.0}` part of the formatting string tells it to restrict the
+//! The `{:.1}` part of the formatting string tells it to restrict the
 //! output to only one decimal place. This value is calculated by repeatedly
 //! dividing the number by 1000 until it becomes less than that, which in this
 //! case results in 8.542, which gets rounded down. Because only one division
