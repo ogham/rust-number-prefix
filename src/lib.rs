@@ -167,7 +167,7 @@ use std::{fmt, ops::{Neg, Div}};
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Prefix {
     Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
-    Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
+    Kibi, Mebi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
 }
 
 
@@ -220,7 +220,7 @@ impl<F: Amounts> NumberPrefix<F> {
     /// ```
     pub fn binary(amount: F) -> Self {
         use self::Prefix::*;
-        Self::format_number(amount, Amounts::NUM_1024, [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
+        Self::format_number(amount, Amounts::NUM_1024, [Kibi, Mebi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
     }
 
     fn format_number(mut amount: F, kilo: F, prefixes: [Prefix; 8]) -> Self {
@@ -263,7 +263,7 @@ impl Prefix {
         match self {
             Kilo => "KILO",  Mega => "MEGA",  Giga  => "GIGA",   Tera  => "TERA",
             Peta => "PETA",  Exa  => "EXA",   Zetta => "ZETTA",  Yotta => "YOTTA",
-            Kibi => "KIBI",  Mibi => "MIBI",  Gibi  => "GIBI",   Tebi  => "TEBI",
+            Kibi => "KIBI",  Mebi => "MEBI",  Gibi  => "GIBI",   Tebi  => "TEBI",
             Pebi => "PEBI",  Exbi => "EXBI",  Zebi  => "ZEBI",   Yobi  => "YOBI",
         }
     }
@@ -274,7 +274,7 @@ impl Prefix {
         match self {
             Kilo => "Kilo",  Mega => "Mega",  Giga  => "Giga",   Tera  => "Tera",
             Peta => "Peta",  Exa  => "Exa",   Zetta => "Zetta",  Yotta => "Yotta",
-            Kibi => "Kibi",  Mibi => "Mibi",  Gibi  => "Gibi",   Tebi  => "Tebi",
+            Kibi => "Kibi",  Mebi => "Mebi",  Gibi  => "Gibi",   Tebi  => "Tebi",
             Pebi => "Pebi",  Exbi => "Exbi",  Zebi  => "Zebi",   Yobi  => "Yobi",
         }
     }
@@ -285,7 +285,7 @@ impl Prefix {
         match self {
             Kilo => "kilo",  Mega => "mega",  Giga  => "giga",   Tera  => "tera",
             Peta => "peta",  Exa  => "exa",   Zetta => "zetta",  Yotta => "yotta",
-            Kibi => "kibi",  Mibi => "mibi",  Gibi  => "gibi",   Tebi  => "tebi",
+            Kibi => "kibi",  Mebi => "mebi",  Gibi  => "gibi",   Tebi  => "tebi",
             Pebi => "pebi",  Exbi => "exbi",  Zebi  => "zebi",   Yobi  => "yobi",
         }
     }
@@ -296,7 +296,7 @@ impl Prefix {
         match self {
             Kilo => "k",   Mega => "M",   Giga  => "G",   Tera  => "T",
             Peta => "P",   Exa  => "E",   Zetta => "Z",   Yotta => "Y",
-            Kibi => "Ki",  Mibi => "Mi",  Gibi  => "Gi",  Tebi  => "Ti",
+            Kibi => "Ki",  Mebi => "Mi",  Gibi  => "Gi",  Tebi  => "Ti",
             Pebi => "Pi",  Exbi => "Ei",  Zebi  => "Zi",  Yobi  => "Yi",
         }
     }
@@ -398,7 +398,7 @@ mod test {
     #[test]
     fn binary_1048576() {
         assert_eq!(NumberPrefix::binary(1_048_576f64),
-                   NumberPrefix::Prefixed(Prefix::Mibi, 1f64))
+                   NumberPrefix::Prefixed(Prefix::Mebi, 1f64))
     }
 
     #[test]

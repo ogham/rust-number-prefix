@@ -33,7 +33,7 @@ impl<T: str::FromStr> str::FromStr for NumberPrefix<T> {
             "Z"  => Prefix::Zetta,
             "Y"  => Prefix::Yotta,
             "Ki" => Prefix::Kibi,
-            "Mi" => Prefix::Mibi,
+            "Mi" => Prefix::Mebi,
             "Gi" => Prefix::Gibi,
             "Ti" => Prefix::Tebi,
             "Pi" => Prefix::Pebi,
