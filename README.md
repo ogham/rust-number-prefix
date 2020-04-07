@@ -118,7 +118,7 @@ assert_eq!("The file is 8.5 kilobytes in size", result);
 ```
 
 
-## String parsing
+## String Parsing
 
 There is a `FromStr` implementation for `NumberPrefix` that parses strings containing numbers and trailing prefixes, such as `7.5E`.
 
