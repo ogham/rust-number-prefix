@@ -257,9 +257,9 @@ impl fmt::Display for Prefix {
 impl Prefix {
 
 	/// Returns the name in uppercase, such as “KILO”.
-    pub fn upper(&self) -> &'static str {
+    pub fn upper(self) -> &'static str {
         use self::Prefix::*;
-        match *self {
+        match self {
             Kilo => "KILO",  Mega => "MEGA",  Giga  => "GIGA",   Tera  => "TERA",
             Peta => "PETA",  Exa  => "EXA",   Zetta => "ZETTA",  Yotta => "YOTTA",
             Kibi => "KIBI",  Mibi => "MIBI",  Gibi  => "GIBI",   Tebi  => "TEBI",
@@ -268,9 +268,9 @@ impl Prefix {
     }
 
     /// Returns the name with the first letter capitalised, such as “Mega”.
-    pub fn caps(&self) -> &'static str {
+    pub fn caps(self) -> &'static str {
         use self::Prefix::*;
-        match *self {
+        match self {
             Kilo => "Kilo",  Mega => "Mega",  Giga  => "Giga",   Tera  => "Tera",
             Peta => "Peta",  Exa  => "Exa",   Zetta => "Zetta",  Yotta => "Yotta",
             Kibi => "Kibi",  Mibi => "Mibi",  Gibi  => "Gibi",   Tebi  => "Tebi",
@@ -279,9 +279,9 @@ impl Prefix {
     }
 
     /// Returns the name in lowercase, such as “giga”.
-    pub fn lower(&self) -> &'static str {
+    pub fn lower(self) -> &'static str {
         use self::Prefix::*;
-        match *self {
+        match self {
             Kilo => "kilo",  Mega => "mega",  Giga  => "giga",   Tera  => "tera",
             Peta => "peta",  Exa  => "exa",   Zetta => "zetta",  Yotta => "yotta",
             Kibi => "kibi",  Mibi => "mibi",  Gibi  => "gibi",   Tebi  => "tebi",
@@ -290,9 +290,9 @@ impl Prefix {
     }
 
     /// Returns the short-hand symbol, such as “T” (for “tera”).
-    pub fn symbol(&self) -> &'static str {
+    pub fn symbol(self) -> &'static str {
         use self::Prefix::*;
-        match *self {
+        match self {
             Kilo => "k",   Mega => "M",   Giga  => "G",   Tera  => "T",
             Peta => "P",   Exa  => "E",   Zetta => "Z",   Yotta => "Y",
             Kibi => "Ki",  Mibi => "Mi",  Gibi  => "Gi",  Tebi  => "Ti",
