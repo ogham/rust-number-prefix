@@ -1,10 +1,8 @@
-use super::*;
+use std::{error::Error, fmt, str};
 
-#[cfg(feature = "std")]
-use std::error::Error;
+use super::{NumberPrefix, Prefix};
 
 
-#[cfg(feature = "std")]
 impl<T: str::FromStr> str::FromStr for NumberPrefix<T> {
     type Err = NumberPrefixParseError;
 

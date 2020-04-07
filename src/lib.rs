@@ -153,13 +153,14 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#[cfg(feature = "std")]
 mod parse;
 
 #[cfg(not(feature = "std"))]
 use core::ops::{Neg, Div};
 
 #[cfg(feature = "std")]
-use std::{fmt, str, ops::{Neg, Div}};
+use std::{fmt, ops::{Neg, Div}};
 
 
 /// A numeric prefix, either binary or decimal.
@@ -448,35 +449,5 @@ mod test {
     	// When you hit yotta, don't keep going
 		assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000_000_000f64),
 		           NumberPrefix::Prefixed(Prefix::Yotta, 1000f64))
-    }
-
-    #[test]
-    fn example_one() {
-		let result = match NumberPrefix::decimal(8542_f32) {
-			NumberPrefix::Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
-			NumberPrefix::Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
-		};
-
-		assert_eq!(result, "The file is 8.5 kB in size");
-    }
-
-    #[test]
-    fn example_two() {
-		let result = match NumberPrefix::decimal(705_f32) {
-			NumberPrefix::Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
-			NumberPrefix::Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
-		};
-
-		assert_eq!(result, "The file is 705 bytes in size");
-    }
-
-	#[test]
-    fn example_three() {
-		let result = match NumberPrefix::binary(8542_f32) {
-			NumberPrefix::Standalone(bytes)   => format!("The file is {} bytes in size", bytes),
-			NumberPrefix::Prefixed(prefix, n) => format!("The file is {:.1} {}B in size", n, prefix),
-		};
-
-		assert_eq!(result, "The file is 8.3 KiB in size");
     }
 }

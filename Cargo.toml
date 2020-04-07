@@ -11,10 +11,13 @@ keywords = ["mathematics", "numerics"]
 license = "MIT"
 readme = "README.md"
 
-
 [features]
 default = ["std"]
 std = []
 
 [package.metadata.docs.rs]
 features = ["std"]
+
+[[example]]
+name = "conversions"
+required-features = ["std"]
