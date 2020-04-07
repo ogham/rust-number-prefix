@@ -11,7 +11,7 @@ This crate works with [Cargo](http://crates.io). Add the following to your `Carg
 
 ```toml
 [dependencies]
-number_prefix = "0.3"
+number_prefix = "0.4"
 ```
 
 This crate has `no_std` support. To activate it, disable the `std` Cargo feature.
