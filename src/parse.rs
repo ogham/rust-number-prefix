@@ -75,15 +75,15 @@ mod test {
         let parse_example_b = "7.05".parse::<NumberPrefix<f64>>();
         let parse_example_c = "7.05 GiB".parse::<NumberPrefix<f64>>();
 
-        assert_eq!(parse_example_a, Ok(NumberPrefix::Prefixed(Exa, 7.05_f64)));
+        assert_eq!(parse_example_a, Ok(NumberPrefix::Prefixed(Prefix::Exa, 7.05_f64)));
         assert_eq!(parse_example_b, Ok(NumberPrefix::Standalone(7.05_f64)));
-        assert_eq!(parse_example_c, Ok(NumberPrefix::Prefixed(Gibi, 7.05_f64)));
+        assert_eq!(parse_example_c, Ok(NumberPrefix::Prefixed(Prefix::Gibi, 7.05_f64)));
     }
 
     #[test]
     fn bad_parse() {
         let parsed = "bogo meters per second".parse::<NumberPrefix<f64>>();
 
-        assert_ne!(parsed, Ok(NumberPrefix::Prefixed(Kilo, 7.05_f64)));
+        assert_ne!(parsed, Ok(NumberPrefix::Prefixed(Prefix::Kilo, 7.05_f64)));
     }
 }

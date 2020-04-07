@@ -138,16 +138,16 @@
 //! metres. Whitespace is allowed between the number and the rest of the string.
 //!
 //! ```
-//! use number_prefix::{NumberPrefix, Exa, Gibi};
+//! use number_prefix::{NumberPrefix, Prefix};
 //!
 //! assert_eq!("7.05E".parse::<NumberPrefix<_>>(),
-//!            Ok(NumberPrefix::Prefixed(Exa, 7.05_f64)));
+//!            Ok(NumberPrefix::Prefixed(Prefix::Exa, 7.05_f64)));
 //!
 //! assert_eq!("7.05".parse::<NumberPrefix<_>>(),
 //!            Ok(NumberPrefix::Standalone(7.05_f64)));
 //!
 //! assert_eq!("7.05 GiB".parse::<NumberPrefix<_>>(),
-//!            Ok(NumberPrefix::Prefixed(Gibi, 7.05_f64)));
+//!            Ok(NumberPrefix::Prefixed(Prefix::Gibi, 7.05_f64)));
 //! ```
 
 
@@ -160,11 +160,6 @@ use core::ops::{Neg, Div};
 
 #[cfg(feature = "std")]
 use std::{fmt, str, ops::{Neg, Div}};
-
-pub use Prefix::{
-	Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta,
-	Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi,
-};
 
 
 /// A numeric prefix, either binary or decimal.
@@ -205,6 +200,7 @@ impl<F: Amounts> NumberPrefix<F> {
     ///            NumberPrefix::Prefixed(Prefix::Giga, 1_f32));
     /// ```
     pub fn decimal(amount: F) -> Self {
+        use self::Prefix::*;
         Self::format_number(amount, Amounts::NUM_1000, [Kilo, Mega, Giga, Tera, Peta, Exa, Zetta, Yotta])
     }
 
@@ -222,6 +218,7 @@ impl<F: Amounts> NumberPrefix<F> {
     ///            NumberPrefix::Prefixed(Prefix::Gibi, 1_f64));
     /// ```
     pub fn binary(amount: F) -> Self {
+        use self::Prefix::*;
         Self::format_number(amount, Amounts::NUM_1024, [Kibi, Mibi, Gibi, Tebi, Pebi, Exbi, Zebi, Yobi])
     }
 
@@ -261,6 +258,7 @@ impl Prefix {
 
 	/// Returns the name in uppercase, such as “KILO”.
     pub fn upper(&self) -> &'static str {
+        use self::Prefix::*;
         match *self {
             Kilo => "KILO",  Mega => "MEGA",  Giga  => "GIGA",   Tera  => "TERA",
             Peta => "PETA",  Exa  => "EXA",   Zetta => "ZETTA",  Yotta => "YOTTA",
@@ -271,6 +269,7 @@ impl Prefix {
 
     /// Returns the name with the first letter capitalised, such as “Mega”.
     pub fn caps(&self) -> &'static str {
+        use self::Prefix::*;
         match *self {
             Kilo => "Kilo",  Mega => "Mega",  Giga  => "Giga",   Tera  => "Tera",
             Peta => "Peta",  Exa  => "Exa",   Zetta => "Zetta",  Yotta => "Yotta",
@@ -281,6 +280,7 @@ impl Prefix {
 
     /// Returns the name in lowercase, such as “giga”.
     pub fn lower(&self) -> &'static str {
+        use self::Prefix::*;
         match *self {
             Kilo => "kilo",  Mega => "mega",  Giga  => "giga",   Tera  => "tera",
             Peta => "peta",  Exa  => "exa",   Zetta => "zetta",  Yotta => "yotta",
@@ -291,6 +291,7 @@ impl Prefix {
 
     /// Returns the short-hand symbol, such as “T” (for “tera”).
     pub fn symbol(&self) -> &'static str {
+        use self::Prefix::*;
         match *self {
             Kilo => "k",   Mega => "M",   Giga  => "G",   Tera  => "T",
             Peta => "P",   Exa  => "E",   Zetta => "Z",   Yotta => "Y",
@@ -337,13 +338,12 @@ impl Amounts for f64 {
 
 #[cfg(test)]
 mod test {
-    use super::NumberPrefix;
-    use super::{Kilo, Giga, Tera, Peta, Exa, Zetta, Yotta, Kibi, Mibi, Gibi};
+    use super::{NumberPrefix, Prefix};
 
 	#[test]
 	fn decimal_minus_one_billion() {
 	    assert_eq!(NumberPrefix::decimal(-1_000_000_000_f64),
-	               NumberPrefix::Prefixed(Giga, -1f64))
+	               NumberPrefix::Prefixed(Prefix::Giga, -1f64))
 	}
 
     #[test]
@@ -367,79 +367,79 @@ mod test {
     #[test]
     fn decimal_1000() {
         assert_eq!(NumberPrefix::decimal(1000f32),
-                   NumberPrefix::Prefixed(Kilo, 1f32))
+                   NumberPrefix::Prefixed(Prefix::Kilo, 1f32))
     }
 
     #[test]
     fn decimal_1030() {
         assert_eq!(NumberPrefix::decimal(1030f32),
-                   NumberPrefix::Prefixed(Kilo, 1.03f32))
+                   NumberPrefix::Prefixed(Prefix::Kilo, 1.03f32))
     }
 
     #[test]
     fn decimal_1100() {
         assert_eq!(NumberPrefix::decimal(1100f64),
-                   NumberPrefix::Prefixed(Kilo, 1.1f64))
+                   NumberPrefix::Prefixed(Prefix::Kilo, 1.1f64))
     }
 
     #[test]
     fn decimal_1111() {
         assert_eq!(NumberPrefix::decimal(1111f64),
-                   NumberPrefix::Prefixed(Kilo, 1.111f64))
+                   NumberPrefix::Prefixed(Prefix::Kilo, 1.111f64))
     }
 
     #[test]
     fn binary_126456() {
         assert_eq!(NumberPrefix::binary(126_456f32),
-                   NumberPrefix::Prefixed(Kibi, 123.492188f32))
+                   NumberPrefix::Prefixed(Prefix::Kibi, 123.492188f32))
     }
 
     #[test]
     fn binary_1048576() {
         assert_eq!(NumberPrefix::binary(1_048_576f64),
-                   NumberPrefix::Prefixed(Mibi, 1f64))
+                   NumberPrefix::Prefixed(Prefix::Mibi, 1f64))
     }
 
     #[test]
     fn binary_1073741824() {
         assert_eq!(NumberPrefix::binary(2_147_483_648f32),
-                   NumberPrefix::Prefixed(Gibi, 2f32))
+                   NumberPrefix::Prefixed(Prefix::Gibi, 2f32))
     }
 
     #[test]
     fn giga() {
     	assert_eq!(NumberPrefix::decimal(1_000_000_000f64),
-    	           NumberPrefix::Prefixed(Giga, 1f64))
+    	           NumberPrefix::Prefixed(Prefix::Giga, 1f64))
     }
 
     #[test]
     fn tera() {
     	assert_eq!(NumberPrefix::decimal(1_000_000_000_000f64),
-    	           NumberPrefix::Prefixed(Tera, 1f64))
+    	           NumberPrefix::Prefixed(Prefix::Tera, 1f64))
     }
 
     #[test]
     fn peta() {
     	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000f64),
-    	           NumberPrefix::Prefixed(Peta, 1f64))
+    	           NumberPrefix::Prefixed(Prefix::Peta, 1f64))
     }
 
     #[test]
     fn exa() {
     	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000f64),
-    	           NumberPrefix::Prefixed(Exa, 1f64))
+    	           NumberPrefix::Prefixed(Prefix::Exa, 1f64))
     }
 
     #[test]
     fn zetta() {
     	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000f64),
-    	           NumberPrefix::Prefixed(Zetta, 1f64))
+    	           NumberPrefix::Prefixed(Prefix::Zetta, 1f64))
     }
 
     #[test]
     fn yotta() {
     	assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000_000f64),
-    	           NumberPrefix::Prefixed(Yotta, 1f64))
+    	           NumberPrefix::Prefixed(Prefix::Yotta, 1f64))
     }
 
     #[test]
@@ -447,7 +447,7 @@ mod test {
     fn and_so_on() {
     	// When you hit yotta, don't keep going
 		assert_eq!(NumberPrefix::decimal(1_000_000_000_000_000_000_000_000_000f64),
-		           NumberPrefix::Prefixed(Yotta, 1000f64))
+		           NumberPrefix::Prefixed(Prefix::Yotta, 1000f64))
     }
 
     #[test]
